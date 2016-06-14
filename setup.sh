@@ -1,4 +1,4 @@
 #!/bin/bash
-ln emacs ~/.emacs
-ln bash_profile ~/.bash_profile
-ln bashrc ~/.bashrc
+ln -s `pwd`/emacs ~/.emacs
+ln -s `pwd`/bash_profile ~/.bash_profile
+ln -s `pwd`/bashrc ~/.bashrc
