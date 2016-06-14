@@ -1,4 +1,5 @@
 set -o pipefail
+alias emacs="emacsclient -c"
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 export PATH=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/bin:$PATH
 export PATH=~/tools/maven/bin:$PATH
@@ -80,15 +81,29 @@ function stanford-tokenize () {
 alias t5sort="$BT_ROOT/rlp/bin/*/t5sort"
 alias t5build="$BT_ROOT/rlp/bin/*/t5build -5 -h 10000000 "
 alias rbl-docs="open ~/tools/doc/rbl/doc/apidocs/rbl-je/com/basistech/rosette/package-summary.html"
-dicts=~/truecaser/saved/ngram-dictionaries
-function truecase () {
+eng_dicts=~/truecaser/saved/ngram-dictionaries/
+spa_dicts=~/truecaser/spa-dicts/
+function truecase-help () {
     input=${1-/dev/stdin}
-    shift 1
+	dicts=$2
+    shift 2
     if [ -a "$input" ]; then
-		~/truecaser/script/run-java.sh com.basistech.rosette.truecaser.TrueCaser $dicts "$input" $*
+		~/truecaser/script/run-java.sh com.basistech.rosette.truecaser.TrueCaserCLI -dicts $dicts -i "$input" $*
     else
-		echo "$input" | ~/truecaser/script/run-java.sh com.basistech.rosette.truecaser.TrueCaser $dicts /dev/stdin $*
+		echo "$input" | ~/truecaser/script/run-java.sh com.basistech.rosette.truecaser.TrueCaserCLI -dicts $dicts -i /dev/stdin $*
     fi
+}
+
+function  truecase-eng () {
+	input="$1"
+	shift 1
+	truecase-help "$input" $eng_dicts -lang eng $*;
+}
+
+function truecase-spa () {
+	input="$1"
+	shift 1
+	truecase-help "$input" $spa_dicts -lang spa $*;
 }
 
 

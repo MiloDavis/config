@@ -1,4 +1,9 @@
 (require 'cl)
+
+;; Set open notes.org key binding
+(defvar notes-file-name "~/config/notes.org")
+(global-set-key (kbd "C-c n") (lambda() (interactive) (find-file notes-file-name)))
+
 (setq user-emacs-directory "~/.emacs.d/")
 
 (defun my/turn-off-linum-mode ()
@@ -180,7 +185,7 @@
    (quote
     ("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(kill-ring-max 100000)
- '(org-agenda-files (quote ("~/notes.org")))
+ '(org-agenda-files (list notes-file-name))
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -309,7 +314,7 @@ With argument, do this that many times."
 (define-key global-map "\C-cl" 'org-store-link)
 (setq org-log-done t)
 (setq org-startup-folded t)
-(add-hook 'org-mode-hook 'org-bullets-mode)
+;; (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq org-todo-keywords
       '((sequence "TODO" "|" "DONE" "CANCELLED")
 	(sequence "STORY" "AWAITING VERIFICATION"
@@ -327,9 +332,6 @@ With argument, do this that many times."
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
-
-;; Set open notes.org key binding
-(global-set-key (kbd "C-c n") (lambda() (interactive) (find-file "~/notes.org")))
 
 ;; Yes or no alias
 (defalias 'yes-or-no-p 'y-or-n-p)
