@@ -1,3 +1,4 @@
+# -*- mode: sh -*-
 set -o pipefail
 alias emacs="emacsclient -c"
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
@@ -15,6 +16,7 @@ export CLASSPATH=/Users/milo/tools/mallet/class:/Users/milo/tools/mallet/lib/mal
 export CLASSPATH=/Users/milo/tools/stanford-corenlp/$CLASSPATH
 export TCAT_PATH=/Users/milo/tcat/
 export TVEC_PATH=/Users/milo/tvec/
+export GLOVE_PATH=~/external/GloVe
 export EDITOR=emacs
 alias mv="mv -i"
 alias cp="cp -i"
@@ -29,7 +31,7 @@ export PS1=$BLUE'\w$(__git_ps1 " (%s)"):\[\033[0m\]\n$ '
 
 alias reload="source ~/.bash_profile"
 alias activatedle="source /Users/milo/deep-learning-experiments/env/bin/activate"
-alias ciderpress="ssh ciderpress.basistech.net"
+alias ciderpress="ssh ciderpress.basistech.net -X"
 function search () { 
     find . -iname *$1*;
 }
@@ -69,7 +71,6 @@ function wstrip () {
 }
 function every () { while True; do $*; sleep 1; done; }
 function every-nth () { interval=$1; shift; while True; do $*; sleep $interval; echo; done; }
-alias scoresent="pushd ~/tcat/script; ./score-sentiment.sh /tmp; popd"
 alias lcase="tr '[A-Z]' '[a-z]'"
 switchd () { pushd; }
 
@@ -77,12 +78,12 @@ function stanford-tokenize () {
     cat ${1-/dev/stdin} | java edu.stanford.nlp.process.PTBTokenizer 2> /dev/null;
 }
 
-# export BT_ROOT=~/.m2/repository/bt/jug/$(ls -1 ~/.m2/repository/bt/jug/ | tail -1)
+export BT_ROOT=~/.m2/repository/bt/jug/$(ls -1 ~/.m2/repository/bt/jug/ | tail -1)
 alias t5sort="$BT_ROOT/rlp/bin/*/t5sort"
 alias t5build="$BT_ROOT/rlp/bin/*/t5build -5 -h 10000000 "
 alias rbl-docs="open ~/tools/doc/rbl/doc/apidocs/rbl-je/com/basistech/rosette/package-summary.html"
 eng_dicts=~/truecaser/saved/ngram-dictionaries/
-spa_dicts=~/truecaser/spa-dicts/
+spa_dicts=~/truecaser/root/data/spa/
 function truecase-help () {
     input=${1-/dev/stdin}
 	dicts=$2
@@ -114,3 +115,4 @@ fi
 
 alias intellij="open /Applications/IntelliJ\ IDEA\ 15\ CE.app/"
 alias mv="mv -i"
+alias chrome="open /Applications/Google\ Chrome.app"

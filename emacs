@@ -1,4 +1,8 @@
+;; -*- mode: Lisp;-*-
 (require 'cl)
+
+(server-start)
+(setq vc-follow-symlinks t)
 
 ;; Set open notes.org key binding
 (defvar notes-file-name "~/config/notes.org")
@@ -25,6 +29,8 @@
 ;; Set open .emacs key binding
 (global-set-key (kbd "C-c c e") (lambda() (interactive) (find-file "~/.emacs")))
 (global-set-key (kbd "C-c c b") (lambda() (interactive) (find-file "~/.bash_profile")))
+
+
 
 ;; Sets eval-buffer key binding
 (global-set-key (kbd "C-c c C-e") 'eval-buffer)
@@ -116,7 +122,7 @@
 
 (add-hook 'shell-mode-hook 'my-shell-mode-hook)
 (add-hook 'shell-mode-hook 'dirtrack-mode)
-(add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
+;; (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
 
 ;; Sets regexp search/replace keybindings
 (global-set-key (kbd "C-c r") 'replace-regexp)
@@ -169,23 +175,23 @@
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
-    ("0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444"
-	 "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
-	 "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879"
-	 default)))
+	("0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(debug-on-error t)
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
    (quote
-    (("left2"
-      (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
-      (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
+	(("left2"
+	  (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
+	  (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
  '(ecb-options-version "2.40")
  '(ido-ignore-files
    (quote
-    ("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
+	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(kill-ring-max 100000)
+ '(linum-delay t)
+ '(linum-eager nil)
  '(org-agenda-files (list notes-file-name))
+ '(org-src-tab-acts-natively t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -310,7 +316,7 @@ With argument, do this that many times."
 
 
 ;; Org mode
-(add-hook 'org-mode-hook 'my/turn-off-linum-mode)
+;; (add-hook 'org-mode-hook 'my/turn-off-linum-mode)
 (define-key global-map "\C-cl" 'org-store-link)
 (setq org-log-done t)
 (setq org-startup-folded t)
@@ -322,13 +328,15 @@ With argument, do this that many times."
 ;; (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
-(add-hook 'org-mode-hook (lambda () 
-			   (local-set-key (kbd "C-c C-M-f") 'org-metaright)
-			   (local-set-key (kbd "C-c C-M-b") 'org-metaleft)
-			   (local-set-key (kbd "C-c C-1") 'org-time-stamp-inactive)
-			   (local-set-key (kbd "C-c a t") 'org-todo-list)
-			   (local-set-key (kbd "C-c o t j") 'org-table-to-jira-table)
-			   (local-set-key (kbd "C-c o t o") 'jira-table-to-org-table)))
+(add-hook 'org-mode-hook (lambda ()
+						   (local-set-key (kbd "C-c C-M-f") 'org-metaright)
+						   (local-set-key (kbd "C-c C-M-b") 'org-metaleft)
+						   (local-set-key (kbd "C-c C-1") 'org-time-stamp-inactive)
+						   (local-set-key (kbd "C-c a t") 'org-todo-list)))
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
