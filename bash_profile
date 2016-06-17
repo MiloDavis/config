@@ -17,7 +17,7 @@ export CLASSPATH=/Users/milo/tools/stanford-corenlp/$CLASSPATH
 export TCAT_PATH=/Users/milo/tcat/
 export TVEC_PATH=/Users/milo/tvec/
 export GLOVE_PATH=~/external/GloVe
-export EDITOR=emacs
+export EDITOR="emacsclient -a '' -c"
 alias mv="mv -i"
 alias cp="cp -i"
 
@@ -112,7 +112,11 @@ if [ $EMACS ]; then
     alias clear="yes '' | head -`tput lines`"
 fi
 
+function space () {
+	python -c "for i in range($1): print '\n'"
+}
 
+# GUI programs
 alias intellij="open /Applications/IntelliJ\ IDEA\ 15\ CE.app/"
 alias mv="mv -i"
 alias chrome="open /Applications/Google\ Chrome.app"

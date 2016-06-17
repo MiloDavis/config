@@ -1,7 +1,8 @@
 ;; -*- mode: Lisp;-*-
 (require 'cl)
 
-(server-start)
+(unless (server-running-p)
+  (server-start))
 (setq vc-follow-symlinks t)
 
 ;; Set open notes.org key binding
@@ -82,11 +83,27 @@
 (global-set-key (kbd "M-n") (lambda () (interactive) (next-line 5)))
 (global-set-key (kbd "M-p") (lambda () (interactive) (previous-line 5)))
 
+;; Jump to character
+(defun jump-to-char-forward (arg char)
+  (interactive "p\ncJump to char (forward): ")
+  (progn
+	(forward-char 1)
+	(search-forward (char-to-string char) nil nil arg)
+	(point)))
+(defun jump-to-char-backward (arg char)
+  (interactive "p\ncJump to char (backwards): ")
+  (progn
+	(backward-char 1)
+	(search-backward (char-to-string char) nil nil arg)
+	(point)))
+
 ;; Zap up to character
 (autoload 'zap-up-to-char "misc"
   "Kill up to, but not including ARGth occurrence of CHAR.")
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 (global-set-key (kbd "M-Z") 'zap-to-char)
+(global-set-key (kbd "M-j") 'jump-to-char-forward)
+(global-set-key (kbd "M-J") 'jump-to-char-backward)
 
 ;; Overwrite mode
 (global-set-key (kbd "C-c o") 'overwrite-mode)
@@ -334,9 +351,13 @@ With argument, do this that many times."
 						   (local-set-key (kbd "C-c C-1") 'org-time-stamp-inactive)
 						   (local-set-key (kbd "C-c a t") 'org-todo-list)))
 
+(setq org-babel-sh-command "/bin/bash")
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((python . t)))
+ '((python . t)
+   (ocaml . t)
+   (sh . t)
+   (java . t)))
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
