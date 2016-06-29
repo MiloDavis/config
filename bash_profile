@@ -73,6 +73,7 @@ function every () { while True; do $*; sleep 1; done; }
 function every-nth () { interval=$1; shift; while True; do $*; sleep $interval; echo; done; }
 alias lcase="tr '[A-Z]' '[a-z]'"
 switchd () { pushd; }
+alias sd="switchd"
 
 function stanford-tokenize () {
     cat ${1-/dev/stdin} | java edu.stanford.nlp.process.PTBTokenizer 2> /dev/null;
@@ -82,8 +83,8 @@ export BT_ROOT=~/.m2/repository/bt/jug/$(ls -1 ~/.m2/repository/bt/jug/ | tail -
 alias t5sort="$BT_ROOT/rlp/bin/*/t5sort"
 alias t5build="$BT_ROOT/rlp/bin/*/t5build -5 -h 10000000 "
 alias rbl-docs="open ~/tools/doc/rbl/doc/apidocs/rbl-je/com/basistech/rosette/package-summary.html"
-eng_dicts=~/truecaser/saved/ngram-dictionaries/
-spa_dicts=~/truecaser/root/data/spa/
+eng_dicts=~/truecaser/root/data/
+spa_dicts=~/truecaser/root/data/
 function truecase-help () {
     input=${1-/dev/stdin}
 	dicts=$2
@@ -107,11 +108,6 @@ function truecase-spa () {
 	truecase-help "$input" $spa_dicts -lang spa $*;
 }
 
-
-if [ $EMACS ]; then
-    alias clear="yes '' | head -`tput lines`"
-fi
-
 function space () {
 	python -c "for i in range($1): print '\n'"
 }
@@ -120,3 +116,4 @@ function space () {
 alias intellij="open /Applications/IntelliJ\ IDEA\ 15\ CE.app/"
 alias mv="mv -i"
 alias chrome="open /Applications/Google\ Chrome.app"
+alias activity="open  /Applications/Utilities/Activity\ Monitor.app"

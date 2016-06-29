@@ -1,6 +1,6 @@
 ;; -*- mode: Lisp;-*-
 (require 'cl)
-
+(require 'server)
 (unless (server-running-p)
   (server-start))
 (setq vc-follow-symlinks t)
@@ -30,7 +30,6 @@
 ;; Set open .emacs key binding
 (global-set-key (kbd "C-c c e") (lambda() (interactive) (find-file "~/.emacs")))
 (global-set-key (kbd "C-c c b") (lambda() (interactive) (find-file "~/.bash_profile")))
-
 
 
 ;; Sets eval-buffer key binding
@@ -139,7 +138,7 @@
 
 (add-hook 'shell-mode-hook 'my-shell-mode-hook)
 (add-hook 'shell-mode-hook 'dirtrack-mode)
-;; (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
+(add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
 
 ;; Sets regexp search/replace keybindings
 (global-set-key (kbd "C-c r") 'replace-regexp)
@@ -205,8 +204,6 @@
    (quote
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(kill-ring-max 100000)
- '(linum-delay t)
- '(linum-eager nil)
  '(org-agenda-files (list notes-file-name))
  '(org-src-tab-acts-natively t)
  '(setq ecb-tip-of-the-day))
@@ -333,15 +330,15 @@ With argument, do this that many times."
 
 
 ;; Org mode
-;; (add-hook 'org-mode-hook 'my/turn-off-linum-mode)
+(add-hook 'org-mode-hook 'my/turn-off-linum-mode)
 (define-key global-map "\C-cl" 'org-store-link)
 (setq org-log-done t)
 (setq org-startup-folded t)
 ;; (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq org-todo-keywords
       '((sequence "TODO" "|" "DONE" "CANCELLED")
-	(sequence "STORY" "AWAITING VERIFICATION"
-		  "|" "VERIFIED" "ROLLOVER")))
+		(sequence "STORY" "AWAITING VERIFICATION"
+				  "|" "VERIFIED" "ROLLOVER")))
 ;; (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
