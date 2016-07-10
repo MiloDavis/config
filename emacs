@@ -265,9 +265,14 @@
 
 ;; Macros:
 (fset 'clear-repl
-      (lambda (&optional arg) "Keyboard macro."
-	(interactive "p")
-	(kmacro-exec-ring-item (quote ([5 67108896 1 backspace 2 1 67108896 134217788 backspace 5] 0 "%d")) arg)))
+      (lambda (&optional arg)
+		"Keyboard macro." 
+		(interactive "p") 
+		(kmacro-exec-ring-item 
+		 (quote ([134217790 1 67108896 5 backspace 16 16 67108896 134217788 backspace 14 backspace 134217848 
+							100 105 115 M-backspace 98 117 102 102 101 114 32 100 105 115 97 98 108 101 32 
+							117 110 100 111 return 134217848 98 117 102 102 101 114 32 101 110 97 98 108 101 
+							32 117 110 100 111 return 134217790 32] 0 "%d")) arg)))
 
 
 (global-set-key (kbd "C-c b a") 'clear-repl)
