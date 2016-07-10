@@ -1,6 +1,8 @@
 ;; -*- mode: Lisp;-*-
 (require 'cl)
+(setq user-emacs-directory "~/.emacs.d/")
 
+(require 'server)
 (unless (server-running-p)
   (server-start))
 (setq vc-follow-symlinks t)
@@ -9,15 +11,17 @@
 (defvar notes-file-name "~/config/notes.org")
 (global-set-key (kbd "C-c n") (lambda() (interactive) (find-file notes-file-name)))
 
-(setq user-emacs-directory "~/.emacs.d/")
-
 (defun my/turn-off-linum-mode ()
   (linum-mode -1))
 
 ;; Modes for file types
-(add-to-list 'auto-mode-alist '("\\.emacs\\'" . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '("\\emacs\\'" . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.scsh\\'" . scheme-mode))
 
 (setq-default tab-width 4)
+
+;; Sets compile key binding
+(global-set-key (kbd "C-<tab> ") 'compile)
 
 ;; Remove extra UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -205,8 +209,6 @@
    (quote
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(kill-ring-max 100000)
- '(linum-delay t)
- '(linum-eager nil)
  '(org-agenda-files (list notes-file-name))
  '(org-src-tab-acts-natively t)
  '(setq ecb-tip-of-the-day))
@@ -263,14 +265,9 @@
 
 ;; Macros:
 (fset 'clear-repl
-      (lambda (&optional arg)
-		"Keyboard macro." 
-		(interactive "p") 
-		(kmacro-exec-ring-item 
-		 (quote ([134217790 1 67108896 5 backspace 16 16 67108896 134217788 backspace 14 backspace 134217848 
-							100 105 115 M-backspace 98 117 102 102 101 114 32 100 105 115 97 98 108 101 32 
-							117 110 100 111 return 134217848 98 117 102 102 101 114 32 101 110 97 98 108 101 
-							32 117 110 100 111 return 134217790 32] 0 "%d")) arg)))
+      (lambda (&optional arg) "Keyboard macro."
+	(interactive "p")
+	(kmacro-exec-ring-item (quote ([5 67108896 1 backspace 2 1 67108896 134217788 backspace 5] 0 "%d")) arg)))
 
 
 (global-set-key (kbd "C-c b a") 'clear-repl)
@@ -297,6 +294,7 @@ With argument, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
+;; Changes kill word behavior to delete words instead
 (global-set-key (read-kbd-macro "<M-DEL>") 'backward-delete-word)
 (global-set-key (read-kbd-macro "M-d") 'delete-word)
 
@@ -309,6 +307,42 @@ With argument, do this that many times."
 ;; Stop annoying startup messages
 (setq inhibit-startup-message t) ; Emacs splash screen
 (setq ecb-tip-of-the-day nil) ; ECB tip of the day
+
+;; ocaml
+(setq auto-mode-alist 
+      (append '(("\\.ml[ily]?$" . tuareg-mode))
+	      auto-mode-alist))
+;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
+(add-hook 'tuareg-mode-hook 'merlin-mode)
+(setq merlin-use-auto-complete-mode 'easy)
+
+(add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
+(require 'ocp-indent)
+
+;; -- opam and utop setup --------------------------------
+;; Setup environment variables using opam
+(dolist
+    (var (car (read-from-string
+	       (shell-command-to-string "opam config env --sexp"))))
+  (setenv (car var) (cadr var)))
+
+;; Merlin mode
+(setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
+(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+(require 'merlin)
+
+;; Enable Merlin for ML buffers
+(add-hook 'tuareg-mode-hook 'merlin-mode)
+
+;; So you can do it on a mac, where `C-<up>` and `C-<down>` are used
+;; by spaces.
+(define-key merlin-mode-map
+  (kbd "C-c <up>") 'merlin-type-enclosing-go-up)
+(define-key merlin-mode-map
+  (kbd "C-c <down>") 'merlin-type-enclosing-go-down)
+(set-face-background 'merlin-type-face "#88FF44")
+
+(add-hook 'tuareg-mode-hook 'auto-complete-mode)
 
 
 ;; show-file-name
@@ -337,21 +371,22 @@ With argument, do this that many times."
 (define-key global-map "\C-cl" 'org-store-link)
 (setq org-log-done t)
 (setq org-startup-folded t)
-;; (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq org-todo-keywords
       '((sequence "TODO" "|" "DONE" "CANCELLED")
 	(sequence "STORY" "AWAITING VERIFICATION"
 		  "|" "VERIFIED" "ROLLOVER")))
 ;; (add-hook 'org-mode-hook 'flyspell-mode)
-(add-hook 'org-mode-hook 'org-bullets-mode)
+;; (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
-(add-hook 'org-mode-hook (lambda ()
-						   (local-set-key (kbd "C-c C-M-f") 'org-metaright)
-						   (local-set-key (kbd "C-c C-M-b") 'org-metaleft)
-						   (local-set-key (kbd "C-c C-1") 'org-time-stamp-inactive)
-						   (local-set-key (kbd "C-c a t") 'org-todo-list)))
+(add-hook 'org-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c C-M-f") 'org-metaright)
+	    (local-set-key (kbd "C-c C-M-b") 'org-metaleft)
+	    (local-set-key (kbd "C-c C-1") 'org-time-stamp-inactive)
+	    (local-set-key (kbd "C-c a t") 'org-todo-list)))
 
 (setq org-babel-sh-command "/bin/bash")
+(setq org-src-fontify-natively t)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
@@ -417,7 +452,6 @@ With argument, do this that many times."
 
 ;; Coq
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.v$" . show-paren-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
   (normal-top-level-add-subdirs-to-load-path))
@@ -432,13 +466,15 @@ With argument, do this that many times."
 (add-hook 'coq-mode-hook #'company-coq-initialize)
 
 ;; Jedi mode
+(require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
 ;; (setq jedi:setup-keys t)                      ; optional
 (setq jedi:complete-on-dot t)                 ; optional
 (autoload 'jedi:setup "jedi" nil t)
-(setq jedi:server-command (list "python" "/Users/milo/.emacs.d/elpa/jedi-0.1.2/jediepcserver.py"))
+(setq jedi:server-command
+	  (list "python" "/Users/milo/.emacs.d/elpa/jedi-0.1.2/jediepcserver.py"))
 ;; This stops the stupid log messages from jedi mode
-(jedi:install-server )
+;; (jedi:install-server )
 
 (defun add-python-shebang ()
   (interactive)
@@ -472,9 +508,10 @@ With argument, do this that many times."
 (put 'set-mark-command-repeat-pop 'disabled nil)
 
 ;; config files
-;;(load-file "~/.emacs-config/email")
+(load-file "~/.emacs-config/email")
 ;; REPLs
-;;(global-set-key (kbd "C-c o") 'run-ocaml)
+(global-set-key (kbd "C-c o") 'run-ocaml)
+(global-set-key (kbd "C-c s") 'racket-repl)
 
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
@@ -494,6 +531,7 @@ With argument, do this that many times."
 ;;(if (display-graphic-p)
 ;;     (ecb-activate ))
 (ido-mode 1)
-
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'set-goal-column 'disabled nil)
 (provide '.emacs)
 ;;; .emacs ends here
