@@ -1,5 +1,6 @@
 ;; -*- mode: Lisp;-*-
 (require 'cl)
+
 (setq user-emacs-directory "~/.emacs.d/")
 
 (require 'server)
@@ -35,7 +36,6 @@
 (global-set-key (kbd "C-c c e") (lambda() (interactive) (find-file "~/.emacs")))
 (global-set-key (kbd "C-c c b") (lambda() (interactive) (find-file "~/.bash_profile")))
 (global-set-key (kbd "C-c c g") (lambda() (interactive) (find-file "~/.gitconfig")))
-
 
 
 ;; Sets eval-buffer key binding
@@ -144,7 +144,7 @@
 
 (add-hook 'shell-mode-hook 'my-shell-mode-hook)
 (add-hook 'shell-mode-hook 'dirtrack-mode)
-;; (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
+(add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
 
 ;; Sets regexp search/replace keybindings
 (global-set-key (kbd "C-c r") 'replace-regexp)
@@ -400,14 +400,14 @@ With argument, do this that many times."
 
 
 ;; Org mode
-;; (add-hook 'org-mode-hook 'my/turn-off-linum-mode)
+(add-hook 'org-mode-hook 'my/turn-off-linum-mode)
 (define-key global-map "\C-cl" 'org-store-link)
 (setq org-log-done t)
 (setq org-startup-folded t)
 (setq org-todo-keywords
       '((sequence "TODO" "|" "DONE" "CANCELLED")
-	(sequence "STORY" "AWAITING VERIFICATION"
-		  "|" "VERIFIED" "ROLLOVER")))
+		(sequence "STORY" "AWAITING VERIFICATION"
+				  "|" "VERIFIED" "ROLLOVER")))
 ;; (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook

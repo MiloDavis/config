@@ -14,28 +14,18 @@ GREEN="\[$(tput setaf 2)\]"
 RESET="\[$(tput sgr0)\]"
 export PS1="\n\[\e[34m\]\w\[\e[m\]\\n$ "
 
-alias rdoc="open /Users/milodavis/racket/fork/racket/doc/help/index.html"
 alias racket="racket -l errortrace -t "
 alias racket-repl=`which racket`
 alias star-wars="telnet towel.blinkenlights.nl"
-alias greps="grep -rnI . -e "
 export HTDOCS=/Applications/XAMPP/htdocs/
 alias ssh-ec2="ssh -i ~/Documents/milodaviscom.pem ubuntu@milodavis.com"
 
 
 alias reload="source ~/.bash_profile"
-function search () { 
+function search () {
     find . -iname *$1*;
 }
 
-function stdin-wrapper () {
-    input=${1-/dev/stdin}
-    if [ -a "$input" ]; then
-	$2 $input;
-    else
-	echo $1 | $2 /dev/stdin
-    fi
-}
 function wstrip () { 
     cat ${1-/dev/stdin} | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//';
 }
@@ -47,5 +37,5 @@ alias sd="switchd"
 
 # GUI programs
 alias intellij="open /Applications/IntelliJ\ IDEA\ 15.app/"
-alias mv="mv -i"
 alias chrome="open /Applications/Google\ Chrome.app"
+alias activity="open /Applications/Utilities/Activity\ Monitor.app"
