@@ -34,6 +34,7 @@
 ;; Set open .emacs key binding
 (global-set-key (kbd "C-c c e") (lambda() (interactive) (find-file "~/.emacs")))
 (global-set-key (kbd "C-c c b") (lambda() (interactive) (find-file "~/.bash_profile")))
+(global-set-key (kbd "C-c c g") (lambda() (interactive) (find-file "~/.gitconfig")))
 
 
 
@@ -306,8 +307,8 @@ With argument, do this that many times."
 
 ;; Folding
 (yafolding-mode 1)
-(global-set-key (kbd "C-c f") 'yafolding-hide-parent-element)
-(global-set-key (kbd "C-c u") 'yafolding-toggle-element)
+(global-set-key (kbd "C-c f") 'yafolding-toggle-element)
+(global-set-key (kbd "C-c C-f") 'yafolding-toggle-element)
 
 ;; Stop annoying startup messages
 (setq inhibit-startup-message t) ; Emacs splash screen
@@ -356,6 +357,32 @@ With argument, do this that many times."
   (interactive)
   (message (buffer-file-name)))
 
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))
+	(message "toggle-window-split only works with exactly two buffers")))
+
 ;; Sets buffer move and info
 (global-set-key (kbd "C-c b r") 'buf-move-right)
 (global-set-key (kbd "C-c b l") 'buf-move-left)
@@ -366,6 +393,7 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c b v") 'split-window-right)
 (global-set-key (kbd "C-c b h") 'split-window-below)
 (global-set-key (kbd "C-c b n") 'rename-buffer)
+(global-set-key (kbd "C-c b t") 'toggle-window-split)
 
 (fset 'make-jira-link
    "\C-w[[https://basistech.atlassian.net/browse/\C-y][\C-y]]")
@@ -381,7 +409,6 @@ With argument, do this that many times."
 	(sequence "STORY" "AWAITING VERIFICATION"
 		  "|" "VERIFIED" "ROLLOVER")))
 ;; (add-hook 'org-mode-hook 'flyspell-mode)
-;; (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook
 	  (lambda ()
@@ -526,6 +553,7 @@ With argument, do this that many times."
 (show-paren-mode 1)
 (require 'auto-complete)
 (global-auto-complete-mode t)
+(column-number-mode )
 
 (require 'color-theme)
 (cond ((window-system )

@@ -16,8 +16,9 @@ export PS1="\n\[\e[34m\]\w\[\e[m\]\\n$ "
 
 alias rdoc="open /Users/milodavis/racket/fork/racket/doc/help/index.html"
 alias racket="racket -l errortrace -t "
+alias racket-repl=`which racket`
 alias star-wars="telnet towel.blinkenlights.nl"
-alias greps="grep -rn . -e "
+alias greps="grep -rnI . -e "
 export HTDOCS=/Applications/XAMPP/htdocs/
 alias ssh-ec2="ssh -i ~/Documents/milodaviscom.pem ubuntu@milodavis.com"
 
@@ -42,8 +43,9 @@ function every () { while True; do $*; sleep 1; done; }
 function every-nth () { interval=$1; shift; while True; do $*; sleep $interval; echo; done; }
 alias lcase="tr '[A-Z]' '[a-z]'"
 switchd () { pushd; }
+alias sd="switchd"
 
 # GUI programs
-alias intellij="open /Applications/IntelliJ\ IDEA\ 15\ CE.app/"
+alias intellij="open /Applications/IntelliJ\ IDEA\ 15.app/"
 alias mv="mv -i"
 alias chrome="open /Applications/Google\ Chrome.app"
