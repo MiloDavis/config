@@ -46,6 +46,7 @@
 
 ;; Sets indent-region keybinding
 (global-set-key (kbd "C-c i") 'indent-region)
+(global-set-key (kbd "C-M-q ") 'prog-indent-sexp)
 
 ;; Sets man key binding
 (global-set-key (kbd "C-c m") 'man)
@@ -95,6 +96,7 @@
 	(forward-char 1)
 	(search-forward (char-to-string char) nil nil arg)
 	(point)))
+
 (defun jump-to-char-backward (arg char)
   (interactive "p\ncJump to char (backwards): ")
   (progn
@@ -109,9 +111,6 @@
 (global-set-key (kbd "M-Z") 'zap-to-char)
 (global-set-key (kbd "M-j") 'jump-to-char-forward)
 (global-set-key (kbd "M-J") 'jump-to-char-backward)
-
-;; Overwrite mode
-(global-set-key (kbd "C-c o") 'overwrite-mode)
 
 ;; Sets meta key to be command
 (setq mac-option-key-is-meta nil
@@ -147,13 +146,11 @@
 (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
 
 ;; Sets regexp search/replace keybindings
-(global-set-key (kbd "C-c r") 'replace-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
+(global-set-key (kbd "C-c s r") 'replace-regexp)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
-;; Unsets easy frame suspension behavior
+;; Unsets frame suspension behavior in gui mode because I kept hitting it on OSX
 (if (window-system )
     (global-unset-key (kbd "C-z"))
   nil)
@@ -198,7 +195,7 @@
  '(custom-safe-themes
    (quote
 	("0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
- '(debug-on-error t)
+ '(debug-on-error nil)
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
    (quote
@@ -321,6 +318,7 @@ With argument, do this that many times."
 ;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
 (add-hook 'tuareg-mode-hook 'merlin-mode)
 (setq merlin-use-auto-complete-mode 'easy)
+(add-hook 'tuareg-mode-hook (lambda () (local-set-key (kbd "M-C-.") 'completion-at-point)))
 
 (add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
 (require 'ocp-indent)
@@ -334,6 +332,7 @@ With argument, do this that many times."
 
 ;; Merlin mode
 (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
+(setq merlin-command "/Users/milodavis/.opam/system/bin/ocamlmerlin")
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 (require 'merlin)
 
@@ -394,6 +393,11 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c b h") 'split-window-below)
 (global-set-key (kbd "C-c b n") 'rename-buffer)
 (global-set-key (kbd "C-c b t") 'toggle-window-split)
+(global-set-key (kbd "C-c b w")
+				(lambda ()
+				  (interactive)
+				  (kill-new (buffer-file-name))
+				  (message (concat "Copied path " (buffer-file-name ) " to kill ring"))))
 
 (fset 'make-jira-link
    "\C-w[[https://basistech.atlassian.net/browse/\C-y][\C-y]]")
@@ -477,7 +481,7 @@ With argument, do this that many times."
 (setq ido-everywhere t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-create-new-buffer 'always)
-(setq ido-file-extensions-order '(".ml" ".py" ".java" ".txt" ".emacs" ".php"))
+(setq ido-file-extensions-order '(".rkt" ".ml" ".py" ".java" ".txt" ".emacs" ".php" ".js"))
 
 
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
@@ -542,18 +546,22 @@ With argument, do this that many times."
 ;; config files
 (load-file "~/.emacs-config/email")
 ;; REPLs
-(global-set-key (kbd "C-c o") 'run-ocaml)
-(global-set-key (kbd "C-c s") 'racket-repl)
+(global-set-key (kbd "C-c r o") 'run-ocaml)
+(global-set-key (kbd "C-c r r") 'racket-repl)
+(global-set-key (kbd "C-c r p") 'run-python)
 
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
   (lambda () (wrap-region-mode 1)))
+(define-globalized-minor-mode global-diff-hl-mode diff-hl-mode
+  (lambda () (diff-hl-mode 1)))
 (global-linum-mode t)
 (delete-selection-mode 1)
 (show-paren-mode 1)
 (require 'auto-complete)
 (global-auto-complete-mode t)
-(column-number-mode )
+(column-number-mode)
+(global-diff-hl-mode t)
 
 (require 'color-theme)
 (cond ((window-system )
