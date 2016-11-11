@@ -78,6 +78,10 @@
     ("8neq"     "≠")
     ("8in"      "∈")
     ("8tab"     "	")
+	("8rarrow"  "→")
+	("8bottom"  "⊥")
+	("8top"  "⊤")
+	("8intersect"  "∩")
     ))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
@@ -183,6 +187,11 @@
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   )
+(setq package-archive-priorities
+      '(("melpa-stable" . 20)
+        ("marmalade" . 20)
+        ("gnu" . 10)
+        ("melpa" . 0)))
 
 (global-set-key (kbd "C-c p") 'package-list-packages)
 
@@ -194,8 +203,8 @@
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
-	("0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
- '(debug-on-error nil)
+	("6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+ '(debug-on-error t)
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
    (quote
@@ -209,6 +218,10 @@
  '(kill-ring-max 100000)
  '(org-agenda-files (list notes-file-name))
  '(org-src-tab-acts-natively t)
+ '(package-selected-packages
+   (quote
+	(org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom company-coq column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+ '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -332,7 +345,7 @@ With argument, do this that many times."
 
 ;; Merlin mode
 (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
-(setq merlin-command "/Users/milodavis/.opam/system/bin/ocamlmerlin")
+(setq merlin-command "/Users/milodavis/.opam/4.02.3/bin/ocamlmerlin")
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 (require 'merlin)
 
@@ -404,6 +417,7 @@ With argument, do this that many times."
 
 
 ;; Org mode
+(setq org-src-fontify-natively t)
 (add-hook 'org-mode-hook 'my/turn-off-linum-mode)
 (define-key global-map "\C-cl" 'org-store-link)
 (setq org-log-done t)
@@ -420,6 +434,8 @@ With argument, do this that many times."
 	    (local-set-key (kbd "C-c C-M-b") 'org-metaleft)
 	    (local-set-key (kbd "C-c C-1") 'org-time-stamp-inactive)
 	    (local-set-key (kbd "C-c a t") 'org-todo-list)))
+(eval-after-load "org"
+  '(require 'ox-md nil t))
 
 (setq org-babel-sh-command "/bin/bash")
 (setq org-src-fontify-natively t)
@@ -539,12 +555,14 @@ With argument, do this that many times."
 (defalias 'sir 'string-insert-rectangle)
 (defalias 'org-insert-timestamp-inactive 'org-time-stamp-inactive)
 
+;; Markdown
+(add-hook 'markdown-mode 'markdown-preview-mode)
+(add-hook 'markdown-mode 'markdown-preview-open-browser)
+
 ;; Enabled commands
 (put 'set-goal-column 'disabled nil)
 (put 'set-mark-command-repeat-pop 'disabled nil)
 
-;; config files
-(load-file "~/.emacs-config/email")
 ;; REPLs
 (global-set-key (kbd "C-c r o") 'run-ocaml)
 (global-set-key (kbd "C-c r r") 'racket-repl)
@@ -553,6 +571,7 @@ With argument, do this that many times."
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
   (lambda () (wrap-region-mode 1)))
+(require 'diff-hl)
 (define-globalized-minor-mode global-diff-hl-mode diff-hl-mode
   (lambda () (diff-hl-mode 1)))
 (global-linum-mode t)
@@ -565,8 +584,8 @@ With argument, do this that many times."
 
 (require 'color-theme)
 (cond ((window-system )
-	   (load-theme 'faff)	; Only use theme in GUI emacs
-	   (set-face-attribute 'region nil :foreground "#ffffff"))
+	   (load-theme 'leuven)	; Only use theme in GUI emacs
+	   )
 	  (t nil))
 (add-hook 'after-init-hook #'global-flycheck-mode)
 ;;(if (display-graphic-p)
