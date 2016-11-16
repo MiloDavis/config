@@ -55,3 +55,16 @@ alias highlight="highlight -O rtf "
 
 # OPAM configuration
 . /Users/milodavis/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+
+function hash-wifi-password () {
+	echo -n $1 | iconv -t utf16le | openssl md4;
+	history -d $((HISTCMD-1));
+}
+
+
+if ! pgrep -u $USER ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval $(<~/.ssh-agent-thing);
+fi

@@ -9,8 +9,22 @@
 (setq vc-follow-symlinks t)
 
 ;; Set open notes.org key binding
-(defvar notes-file-name "~/config/notes.org")
-(global-set-key (kbd "C-c n") (lambda() (interactive) (find-file notes-file-name)))
+(defvar notes-directory "~/notes/")
+(defvar research-notes "research.org")
+(defvar general-notes "general.org")
+(defvar misc-notes "misc.org")
+(defvar scouting-notes "scouting.org")
+(defvar nutrons-notes "nutrons.org")
+(defvar personal-notes "personal.org")
+(defvar analysis-notes "analysis.org")
+(global-set-key (kbd "C-c n g") (lambda() (interactive) (find-file (concat notes-directory general-notes))))
+(global-set-key (kbd "C-c n r") (lambda() (interactive) (find-file (concat notes-directory research-notes))))
+(global-set-key (kbd "C-c n m") (lambda() (interactive) (find-file (concat notes-directory misc-notes))))
+(global-set-key (kbd "C-c n s") (lambda() (interactive) (find-file (concat notes-directory scouting-notes))))
+(global-set-key (kbd "C-c n n") (lambda() (interactive) (find-file (concat notes-directory nutrons-notes))))
+(global-set-key (kbd "C-c n p") (lambda() (interactive) (find-file (concat notes-directory personal-notes))))
+(global-set-key (kbd "C-c n a") (lambda() (interactive) (find-file (concat notes-directory analysis-notes))))
+(setq org-agenda-files '("~/notes/"))
 
 (defun my/turn-off-linum-mode ()
   (linum-mode -1))
@@ -21,12 +35,14 @@
 
 (setq-default tab-width 4)
 
-;; Sets compile key binding
+;; Sets compile configuration
 (global-set-key (kbd "C-<tab> ") 'compile)
+(setq compilation-scroll-output t)
 
 ;; Remove extra UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (eq system-type 'darwin) nil (menu-bar-mode -1)) ; On OSX show menus, but on arch don't
 
 ;; Scroll by one
 (global-set-key (kbd "<M-up>") (lambda () (interactive) (scroll-down-command 1)))
@@ -82,6 +98,8 @@
 	("8bottom"  "⊥")
 	("8top"  "⊤")
 	("8intersect"  "∩")
+	("8and" "∧")
+	("8or" "∨")
     ))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
@@ -186,7 +204,9 @@
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   )
+
 (setq package-archive-priorities
       '(("melpa-stable" . 20)
         ("marmalade" . 20)
@@ -203,8 +223,9 @@
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
-	("6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+	("89b5c642f4bbcf955215c8f756ae352cdc6b7b0375b01da1f1aa5fd652ae822e" "6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(debug-on-error t)
+ '(default-input-method "TeX")
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
    (quote
@@ -216,11 +237,10 @@
    (quote
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(kill-ring-max 100000)
- '(org-agenda-files (list notes-file-name))
  '(org-src-tab-acts-natively t)
  '(package-selected-packages
    (quote
-	(org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom company-coq column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+	(org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
  '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
@@ -345,7 +365,7 @@ With argument, do this that many times."
 
 ;; Merlin mode
 (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
-(setq merlin-command "/Users/milodavis/.opam/4.02.3/bin/ocamlmerlin")
+(setq merlin-command "/home/milo/.opam/system/bin/ocamlmerlin")
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 (require 'merlin)
 
@@ -423,9 +443,7 @@ With argument, do this that many times."
 (setq org-log-done t)
 (setq org-startup-folded t)
 (setq org-todo-keywords
-      '((sequence "TODO" "|" "DONE" "CANCELLED")
-		(sequence "STORY" "AWAITING VERIFICATION"
-				  "|" "VERIFIED" "ROLLOVER")))
+      '((sequence "TODO" "|" "DONE" "CANCELLED")))
 ;; (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook
@@ -444,7 +462,8 @@ With argument, do this that many times."
  '((python . t)
    (ocaml . t)
    (sh . t)
-   (java . t)))
+   (java . t)
+   (emacs-lisp . t)))
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
@@ -505,9 +524,9 @@ With argument, do this that many times."
 ;; Coq
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
-(let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+(let ((default-directory "~/.emacs.d/lisp"))
   (normal-top-level-add-subdirs-to-load-path))
-(defun load-proof()
+(defun load-proof ()
   (interactive)
   (load-library "proof"))
 ;;(load-proof)
@@ -516,6 +535,7 @@ With argument, do this that many times."
 (setq proof-script-fly-past-comments t)
 (require 'proof-site)
 (add-hook 'coq-mode-hook #'company-coq-initialize)
+(add-hook 'coq-mode-hook (lambda () (abbrev-mode -1)))
 
 ;; Jedi mode
 (require 'jedi)
@@ -567,6 +587,8 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c r o") 'run-ocaml)
 (global-set-key (kbd "C-c r r") 'racket-repl)
 (global-set-key (kbd "C-c r p") 'run-python)
+
+(set-face-attribute 'default nil :height 100)
 
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
