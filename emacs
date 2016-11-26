@@ -17,6 +17,7 @@
 (defvar nutrons-notes "nutrons.org")
 (defvar personal-notes "personal.org")
 (defvar analysis-notes "analysis.org")
+(defvar hacks-notes "hacks.org")
 (global-set-key (kbd "C-c n g") (lambda() (interactive) (find-file (concat notes-directory general-notes))))
 (global-set-key (kbd "C-c n r") (lambda() (interactive) (find-file (concat notes-directory research-notes))))
 (global-set-key (kbd "C-c n m") (lambda() (interactive) (find-file (concat notes-directory misc-notes))))
@@ -24,6 +25,7 @@
 (global-set-key (kbd "C-c n n") (lambda() (interactive) (find-file (concat notes-directory nutrons-notes))))
 (global-set-key (kbd "C-c n p") (lambda() (interactive) (find-file (concat notes-directory personal-notes))))
 (global-set-key (kbd "C-c n a") (lambda() (interactive) (find-file (concat notes-directory analysis-notes))))
+(global-set-key (kbd "C-c n h") (lambda() (interactive) (find-file (concat notes-directory hacks-notes))))
 (setq org-agenda-files '("~/notes/"))
 
 (defun my/turn-off-linum-mode ()
@@ -533,9 +535,9 @@ With argument, do this that many times."
 (setq proof-splash-seen t)
 (setq proof-three-window-mode-policy 'hybrid)
 (setq proof-script-fly-past-comments t)
-(require 'proof-site)
-(add-hook 'coq-mode-hook #'company-coq-initialize)
-(add-hook 'coq-mode-hook (lambda () (abbrev-mode -1)))
+;; (require 'proof-site)
+;; (add-hook 'coq-mode-hook #'company-coq-initialize)
+;; (add-hook 'coq-mode-hook (lambda () (abbrev-mode -1)))
 
 ;; Jedi mode
 (require 'jedi)
@@ -588,7 +590,7 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c r r") 'racket-repl)
 (global-set-key (kbd "C-c r p") 'run-python)
 
-(set-face-attribute 'default nil :height 100)
+(set-face-attribute 'default nil :height 125)
 
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
