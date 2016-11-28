@@ -346,6 +346,18 @@ With argument, do this that many times."
 (setq inhibit-startup-message t) ; Emacs splash screen
 (setq ecb-tip-of-the-day nil) ; ECB tip of the day
 
+;; ocaml
+(setq auto-mode-alist 
+      (append '(("\\.ml[ily]?$" . tuareg-mode))
+	      auto-mode-alist))
+;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
+(add-hook 'tuareg-mode-hook 'merlin-mode)
+(setq merlin-use-auto-complete-mode 'easy)
+(add-hook 'tuareg-mode-hook (lambda () (local-set-key (kbd "M-C-.") 'completion-at-point)))
+
+(add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
+(require 'ocp-indent)
+
 ;; -- opam and utop setup --------------------------------
 ;; Setup environment variables using opam
 (dolist
@@ -622,6 +634,3 @@ With argument, do this that many times."
 (put 'set-goal-column 'disabled nil)
 (provide '.emacs)
 ;;; .emacs ends here
-;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
-;; ## end of OPAM user-setup addition for emacs / base ## keep this line
