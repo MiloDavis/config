@@ -17,6 +17,7 @@
 (defvar nutrons-notes "nutrons.org")
 (defvar personal-notes "personal.org")
 (defvar analysis-notes "analysis.org")
+(defvar hacks-notes "hacks.org")
 (global-set-key (kbd "C-c n g") (lambda() (interactive) (find-file (concat notes-directory general-notes))))
 (global-set-key (kbd "C-c n r") (lambda() (interactive) (find-file (concat notes-directory research-notes))))
 (global-set-key (kbd "C-c n m") (lambda() (interactive) (find-file (concat notes-directory misc-notes))))
@@ -24,6 +25,7 @@
 (global-set-key (kbd "C-c n n") (lambda() (interactive) (find-file (concat notes-directory nutrons-notes))))
 (global-set-key (kbd "C-c n p") (lambda() (interactive) (find-file (concat notes-directory personal-notes))))
 (global-set-key (kbd "C-c n a") (lambda() (interactive) (find-file (concat notes-directory analysis-notes))))
+(global-set-key (kbd "C-c n h") (lambda() (interactive) (find-file (concat notes-directory hacks-notes))))
 (setq org-agenda-files '("~/notes/"))
 
 (defun my/turn-off-linum-mode ()
@@ -240,7 +242,7 @@
  '(org-src-tab-acts-natively t)
  '(package-selected-packages
    (quote
-	(org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+	(idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
  '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
@@ -344,18 +346,6 @@ With argument, do this that many times."
 (setq inhibit-startup-message t) ; Emacs splash screen
 (setq ecb-tip-of-the-day nil) ; ECB tip of the day
 
-;; ocaml
-(setq auto-mode-alist 
-      (append '(("\\.ml[ily]?$" . tuareg-mode))
-	      auto-mode-alist))
-;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
-(add-hook 'tuareg-mode-hook 'merlin-mode)
-(setq merlin-use-auto-complete-mode 'easy)
-(add-hook 'tuareg-mode-hook (lambda () (local-set-key (kbd "M-C-.") 'completion-at-point)))
-
-(add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
-(require 'ocp-indent)
-
 ;; -- opam and utop setup --------------------------------
 ;; Setup environment variables using opam
 (dolist
@@ -367,10 +357,23 @@ With argument, do this that many times."
 (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
 (setq merlin-command "/home/milo/.opam/system/bin/ocamlmerlin")
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+(setq utop-command "opam config exec -- utop -emacs")
 (require 'merlin)
 
 ;; Enable Merlin for ML buffers
 (add-hook 'tuareg-mode-hook 'merlin-mode)
+
+(setq auto-mode-alist 
+      (append '(("\\.ml[ily]?$" . tuareg-mode))
+	      auto-mode-alist))
+;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
+(add-hook 'tuareg-mode-hook 'merlin-mode)
+(setq merlin-use-auto-complete-mode 'easy)
+(add-hook 'tuareg-mode-hook (lambda () (local-set-key (kbd "M-C-.") 'completion-at-point)))
+
+(add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
+(require 'ocp-indent)
+
 
 ;; So you can do it on a mac, where `C-<up>` and `C-<down>` are used
 ;; by spaces.
@@ -516,7 +519,7 @@ With argument, do this that many times."
 (setq ido-everywhere t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-create-new-buffer 'always)
-(setq ido-file-extensions-order '(".rkt" ".ml" ".py" ".java" ".txt" ".emacs" ".php" ".js"))
+(setq ido-file-extensions-order '(".rkt" ".ml" ".py" ".java" ".txt" ".emacs" ".php" ".js" ".tex" ".scrbl"))
 
 
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
@@ -535,7 +538,9 @@ With argument, do this that many times."
 (setq proof-script-fly-past-comments t)
 (require 'proof-site)
 (add-hook 'coq-mode-hook #'company-coq-initialize)
-(add-hook 'coq-mode-hook (lambda () (abbrev-mode -1)))
+(add-hook 'coq-mode-hook (lambda ()
+						   (abbrev-mode -1)
+						   (flycheck-mode -1)))
 
 ;; Jedi mode
 (require 'jedi)
@@ -584,7 +589,7 @@ With argument, do this that many times."
 (put 'set-mark-command-repeat-pop 'disabled nil)
 
 ;; REPLs
-(global-set-key (kbd "C-c r o") 'run-ocaml)
+(global-set-key (kbd "C-c r o") 'utop)
 (global-set-key (kbd "C-c r r") 'racket-repl)
 (global-set-key (kbd "C-c r p") 'run-python)
 
@@ -617,3 +622,6 @@ With argument, do this that many times."
 (put 'set-goal-column 'disabled nil)
 (provide '.emacs)
 ;;; .emacs ends here
+;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; ## end of OPAM user-setup addition for emacs / base ## keep this line
