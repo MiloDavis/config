@@ -1,6 +1,8 @@
 ;; -*- mode: Lisp;-*-
 (require 'cl)
 
+(defvar osx (equal system-type 'darwin))
+
 (setq user-emacs-directory "~/.emacs.d/")
 
 (require 'server)
@@ -44,7 +46,7 @@
 ;; Remove extra UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (eq system-type 'darwin) nil (menu-bar-mode -1)) ; On OSX show menus, but on arch don't
+(if osx nil (menu-bar-mode -1)) ; On OSX show menus, but on arch don't
 
 ;; Scroll by one
 (global-set-key (kbd "<M-up>") (lambda () (interactive) (scroll-down-command 1)))
@@ -548,7 +550,10 @@ With argument, do this that many times."
 (setq proof-splash-seen t)
 (setq proof-three-window-mode-policy 'hybrid)
 (setq proof-script-fly-past-comments t)
-(require 'proof-site)
+(defvar proof-site-location "~/.emacs.d/lisp/PG/generic/proof-site.el")
+(if osx
+	(load proof-site-location)
+  (require 'proof-site))
 (add-hook 'coq-mode-hook #'company-coq-initialize)
 (add-hook 'coq-mode-hook (lambda ()
 						   (abbrev-mode -1)
@@ -561,7 +566,7 @@ With argument, do this that many times."
 (setq jedi:complete-on-dot t)                 ; optional
 (autoload 'jedi:setup "jedi" nil t)
 (setq jedi:server-command
-	  (list "python" "/Users/milo/.emacs.d/elpa/jedi-0.1.2/jediepcserver.py"))
+	  (list "python" "~/.emacs.d/elpa/jedi-0.1.2/jediepcserver.py"))
 ;; This stops the stupid log messages from jedi mode
 ;; (jedi:install-server )
 
