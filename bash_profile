@@ -68,3 +68,10 @@ fi
 if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval $(<~/.ssh-agent-thing);
 fi
+
+# I somehow keep turning off my xmodmap configuration
+# I'm not sure how and haven't sat down to fix it yet
+# this function will let me temporarily fix things
+function CAPS () {
+	setxkbmap; sleep 2; xmodmap ~/.xmodmap;
+}
