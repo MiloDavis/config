@@ -20,6 +20,7 @@
 (defvar personal-notes "personal.org")
 (defvar analysis-notes "analysis.org")
 (defvar hacks-notes "hacks.org")
+(defvar course-notes "courses.org")
 (global-set-key (kbd "C-c n g") (lambda() (interactive) (find-file (concat notes-directory general-notes))))
 (global-set-key (kbd "C-c n r") (lambda() (interactive) (find-file (concat notes-directory research-notes))))
 (global-set-key (kbd "C-c n m") (lambda() (interactive) (find-file (concat notes-directory misc-notes))))
@@ -28,6 +29,7 @@
 (global-set-key (kbd "C-c n p") (lambda() (interactive) (find-file (concat notes-directory personal-notes))))
 (global-set-key (kbd "C-c n a") (lambda() (interactive) (find-file (concat notes-directory analysis-notes))))
 (global-set-key (kbd "C-c n h") (lambda() (interactive) (find-file (concat notes-directory hacks-notes))))
+(global-set-key (kbd "C-c n c") (lambda() (interactive) (find-file (concat notes-directory course-notes))))
 (setq org-agenda-files '("~/notes/"))
 
 (defun my/turn-off-linum-mode ()
@@ -198,6 +200,13 @@
       `((".*" . "~/.saves")))
 (setq auto-save-file-name-transforms
       `((".*" "~/.saves" t)))
+
+;; Requires rules
+(load "~/.emacs.d/my-packages/rules.el")
+
+;; Twelf configuration
+(setq twelf-root "~/.pathapps/Twelf/")
+(load (concat twelf-root "emacs/twelf-init.el"))
 
 ;; Makes scripts executable if file is a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
@@ -610,7 +619,7 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c r r") 'racket-repl)
 (global-set-key (kbd "C-c r p") 'run-python)
 
-(set-face-attribute 'default nil :height 100)
+(set-face-attribute 'default nil :height (if osx 125 100))
 
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
