@@ -5,7 +5,8 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 export PATH=/Users/milodavis/racket/fork/racket/bin/:$PATH
 export PATH=/Users/milodavis/.opam/system/bin/:$PATH
 export LANG=en_US.UTF-8
-export HOMEBREW_GITHUB_API_TOKEN="fba0b603eeeb996ed69ea2f29c52e91021c62f4a"
+export HOMEBREW_GITHUB_API_TOKEN=$(cat github_api_token)
+export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
 alias mv="mv -i"
 alias cp="cp -i"
 alias ctags='/usr/local/bin/ctags'
@@ -20,7 +21,7 @@ alias star-wars="telnet towel.blinkenlights.nl"
 
 alias reload="source ~/.bash_profile"
 function search () {
-    find . -iname *$1*;
+    find . -iname "*$1*";
 }
 
 function wstrip () {
@@ -48,13 +49,9 @@ export TYPED_RACKET="~/racket/fork/racket/share/pkgs/typed-racket-lib/"
 alias intellij="open /Applications/IntelliJ\ IDEA\ 15.app/"
 alias chrome="open /Applications/Google\ Chrome.app"
 alias activity="open /Applications/Utilities/Activity\ Monitor.app"
-# To exit screen C-\ C-d
-alias punge="mosh milodavis@punge.ccs.neu.edu --ssh='ssh punge'"
+# To exit screen C-\ C-d on punge
 # JS Type Analysis
 alias highlight="highlight -O rtf "
-
-# OPAM configuration
-. /Users/milodavis/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
 function hash-wifi-password () {
 	echo -n $1 | iconv -t utf16le | openssl md4;
@@ -79,3 +76,6 @@ fi
 function CAPS () {
 	setxkbmap; sleep 2; xmodmap ~/.xmodmap;
 }
+
+# OPAM configuration
+. /Users/milodavis/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true

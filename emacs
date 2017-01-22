@@ -165,6 +165,12 @@
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
 
+(autoload 'bash-completion-dynamic-complete 
+  "bash-completion"
+  "BASH completion hook")
+(add-hook 'shell-dynamic-complete-functions
+  'bash-completion-dynamic-complete)
+
 (defun my-shell-mode-hook ()
   ;; add this hook as buffer local, so it runs once per window.
   (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t))
@@ -233,11 +239,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
-	("89b5c642f4bbcf955215c8f756ae352cdc6b7b0375b01da1f1aa5fd652ae822e" "6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
- '(debug-on-error t)
+	("4156d0da4d9b715c6f7244be34f2622716fb563d185b6facedca2c0985751334" "51897d0e185a9d350a124afac8d5e95cda53e737f3b33befc44ab02f2b03dab1" "89b5c642f4bbcf955215c8f756ae352cdc6b7b0375b01da1f1aa5fd652ae822e" "6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+ '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
@@ -246,6 +256,7 @@
 	  (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
 	  (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
  '(ecb-options-version "2.40")
+ '(hl-sexp-background-color "#efebe9")
  '(ido-ignore-files
    (quote
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
@@ -253,7 +264,7 @@
  '(org-src-tab-acts-natively t)
  '(package-selected-packages
    (quote
-	(2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+	(bash-completion org-jira nasm-mode 2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool racket-mode pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
  '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
@@ -302,7 +313,7 @@
 
 
 ;; Sets path variable
-(exec-path-from-shell-initialize )
+(exec-path-from-shell-initialize)
 (add-to-list 'exec-path-from-shell-variables "TEXINPUTS")
 (exec-path-from-shell-initialize )
 
@@ -363,7 +374,7 @@ With argument, do this that many times."
 	      auto-mode-alist))
 ;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
 (add-hook 'tuareg-mode-hook 'merlin-mode)
-(setq merlin-use-auto-complete-mode 'easy)
+(setq merlin-use-auto-complete-mode t)
 (add-hook 'tuareg-mode-hook (lambda () (local-set-key (kbd "M-C-.") 'completion-at-point)))
 
 (add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
@@ -378,7 +389,7 @@ With argument, do this that many times."
 
 ;; Merlin mode
 (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
-(setq merlin-command "/home/milo/.opam/system/bin/ocamlmerlin")
+(setq merlin-command (if osx "~/.opam/system/bin/ocamlmerlin" "/home/milo/.opam/system/bin/ocamlmerlin"))
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 (setq utop-command "opam config exec -- utop -emacs")
 (require 'merlin)
@@ -392,6 +403,7 @@ With argument, do this that many times."
 ;;(add-hook 'tuareg-mode-hook 'column-enforce-mode)
 (add-hook 'tuareg-mode-hook 'merlin-mode)
 (setq merlin-use-auto-complete-mode 'easy)
+(setq merlin-ac-setup 'easy)
 (add-hook 'tuareg-mode-hook (lambda () (local-set-key (kbd "M-C-.") 'completion-at-point)))
 
 (add-to-list 'load-path "/Users/milodavis/.opam/system/share/emacs/site-lisp")
@@ -489,7 +501,9 @@ With argument, do this that many times."
    (ocaml . t)
    (sh . t)
    (java . t)
-   (emacs-lisp . t)))
+   (emacs-lisp . t)
+   (racket . t)
+   (C . t)))
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
