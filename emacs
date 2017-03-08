@@ -38,6 +38,9 @@
 ;; Modes for file types
 (add-to-list 'auto-mode-alist '("\\emacs\\'" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.scsh\\'" . scheme-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.s\\'" . nasm-mode))
 
 (setq-default tab-width 4)
 
@@ -58,6 +61,7 @@
 (global-set-key (kbd "C-c c e") (lambda() (interactive) (find-file "~/.emacs")))
 (global-set-key (kbd "C-c c b") (lambda() (interactive) (find-file "~/.bash_profile")))
 (global-set-key (kbd "C-c c g") (lambda() (interactive) (find-file "~/.gitconfig")))
+(global-set-key (kbd "C-c c s") (lambda() (interactive) (find-file "~/.ssh/config")))
 
 
 ;; Sets eval-buffer key binding
@@ -74,7 +78,8 @@
 (global-set-key (kbd "C-c m") 'man)
 
 ;; Abbreviations
-(define-abbrev-table 'global-abbrev-table '(
+(define-abbrev-table 'global-abbrev-table
+  '(
     ("8alpha"   "α")
     ("8beta"    "β")
     ("8gamma"   "γ")
@@ -92,6 +97,7 @@
     ("8psi"     "ψ")
     ("8Omega"   "Ω")
     ("8omega"   "ω")
+	("8eta"     "η")
     ("8in"      "∈")
     ("8nin"     "∉")
     ("8inf"     "∞")
@@ -101,11 +107,18 @@
     ("8in"      "∈")
     ("8tab"     "	")
 	("8rarrow"  "→")
-	("8bottom"  "⊥")
+	("8bot"  "⊥")
 	("8top"  "⊤")
 	("8intersect"  "∩")
 	("8and" "∧")
 	("8or" "∨")
+	("8subset" "⊆")
+	("8ssubset" "⊂")
+	("8null" "∅")
+	("8cdot" "·")
+	("8join" "⊔")
+	("8meet" "⊓")
+	("8sqsubseteq" "⊑")
     ))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
@@ -261,11 +274,12 @@
  '(ido-ignore-files
    (quote
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
+ '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
  '(kill-ring-max 100000)
  '(org-src-tab-acts-natively t)
  '(package-selected-packages
    (quote
-	(racket-mode bash-completion org-jira nasm-mode 2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+	(realgud web-mode racket-mode bash-completion org-jira nasm-mode 2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
  '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
@@ -494,6 +508,8 @@ With argument, do this that many times."
 (eval-after-load "org"
   '(require 'ox-md nil t))
 
+(setq org-export-with-toc nil)
+
 (setq org-babel-sh-command "/bin/bash")
 (setq org-src-fontify-natively t)
 (org-babel-do-load-languages
@@ -501,9 +517,9 @@ With argument, do this that many times."
  '((python . t)
    (ocaml . t)
    (sh . t)
+   (shell . t)
    (java . t)
    (emacs-lisp . t)
-   (racket . t)
    (C . t)))
 
 (setq org-clock-persist 'history)
@@ -590,7 +606,7 @@ With argument, do this that many times."
 (setq jedi:complete-on-dot t)                 ; optional
 (autoload 'jedi:setup "jedi" nil t)
 (setq jedi:server-command
-	  (list "python" "~/.emacs.d/elpa/jedi-0.1.2/jediepcserver.py"))
+	  (list "python" "~/.emacs.d/elpa/jedi-core-20160709.722/jediepcserver.py"))
 ;; This stops the stupid log messages from jedi mode
 ;; (jedi:install-server )
 

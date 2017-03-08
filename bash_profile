@@ -46,7 +46,7 @@ alias emacs="emacsclient -c"
 export HTDOCS="/Applications/XAMPP/htdocs/"
 export TYPED_RACKET="~/racket/fork/racket/share/pkgs/typed-racket-lib/"
 # GUI programs
-alias intellij="open /Applications/IntelliJ\ IDEA\ 15.app/"
+alias intellij="open /Applications/IntelliJ\ IDEA.app/"
 alias chrome="open /Applications/Google\ Chrome.app"
 alias activity="open /Applications/Utilities/Activity\ Monitor.app"
 # To exit screen C-\ C-d on punge
