@@ -4,6 +4,8 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 export PATH=/Users/milodavis/racket/fork/racket/bin/:$PATH
 export PATH=/Users/milodavis/.opam/system/bin/:$PATH
+export PATH=/usr/texbin:$PATH
+export PATH=/usr/local/texlive/2015/texmf-dist/fonts/tfm:$PATH
 export LANG=en_US.UTF-8
 export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/config/github_api_token)
 export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
@@ -68,6 +70,12 @@ if [[ "$OSTYPE" =~ "*darwin*" ]]; then
 	if [[ "$SSH_AGENT_PID" == "" ]]; then
 		eval $(<~/.ssh-agent-thing);
 	fi
+fi
+
+if [[ "$OSTYPE" = *"darwin"* ]]; then
+	ssh-add ~/.ssh/ccis_github
+	ssh-add ~/.ssh/git-ec2
+	ssh-add ~/.ssh/github_rsa < /dev/null
 fi
 
 # I somehow keep turning off my xmodmap configuration

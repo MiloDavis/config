@@ -119,7 +119,7 @@
 	("8join" "⊔")
 	("8meet" "⊓")
 	("8sqsubseteq" "⊑")
-    ))
+	))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
 
@@ -144,6 +144,21 @@
 	(backward-char 1)
 	(search-backward (char-to-string char) nil nil arg)
 	(point)))
+
+
+;; Moves to first non-whitespace character, then character 0
+(defadvice move-beginning-of-line (around smarter-bol activate)
+  ;; Move to requested line if needed.
+  (let ((arg (or (ad-get-arg 0) 1)))
+    (when (/= arg 1)
+      (forward-line (1- arg))))
+  ;; Move to indentation on first call, then to actual BOL on second.
+  (let ((pos (point)))
+    (back-to-indentation)
+    (when (= pos (point))
+      ad-do-it)))
+
+(global-set-key (kbd "M-o") 'other-window)
 
 ;; Zap up to character
 (autoload 'zap-up-to-char "misc"
@@ -177,12 +192,6 @@
     (let ((process (get-buffer-process (current-buffer))))
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
-
-(autoload 'bash-completion-dynamic-complete 
-  "bash-completion"
-  "BASH completion hook")
-(add-hook 'shell-dynamic-complete-functions
-  'bash-completion-dynamic-complete)
 
 (defun my-shell-mode-hook ()
   ;; add this hook as buffer local, so it runs once per window.
@@ -220,13 +229,6 @@
 (setq auto-save-file-name-transforms
       `((".*" "~/.saves" t)))
 
-;; Requires rules
-(load "~/.emacs.d/my-packages/rules.el")
-
-;; Twelf configuration
-(setq twelf-root "~/.pathapps/Twelf/")
-(load (concat twelf-root "emacs/twelf-init.el"))
-
 ;; Makes scripts executable if file is a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
@@ -260,7 +262,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-	("4156d0da4d9b715c6f7244be34f2622716fb563d185b6facedca2c0985751334" "51897d0e185a9d350a124afac8d5e95cda53e737f3b33befc44ab02f2b03dab1" "89b5c642f4bbcf955215c8f756ae352cdc6b7b0375b01da1f1aa5fd652ae822e" "6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+	("ad9747dc51ca23d1c1382fa9bd5d76e958a5bfe179784989a6a666fe801aadf2" "4156d0da4d9b715c6f7244be34f2622716fb563d185b6facedca2c0985751334" "51897d0e185a9d350a124afac8d5e95cda53e737f3b33befc44ab02f2b03dab1" "89b5c642f4bbcf955215c8f756ae352cdc6b7b0375b01da1f1aa5fd652ae822e" "6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
@@ -276,10 +278,11 @@
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
  '(kill-ring-max 100000)
+ '(org-directory "~/notes")
  '(org-src-tab-acts-natively t)
- '(package-selected-packages
+  '(package-selected-packages
    (quote
-	(realgud web-mode racket-mode bash-completion org-jira nasm-mode 2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+	(ox-jira ox-twbs emacsql emacsql-mysql mysql-to-org mysql2sqlite org-agenda-property org-alert org-attach-screenshot org-autolist org-blog org-board org-brain org-capture-pop-frame org-chinese-utils org-clock-csv org-commentary org-context org-cua-dwim org-dotemacs org-dp org-drill-table org-dropbox org-elisp-help org-email org-evil org-gcal org-gnome org-grep org-if org-iv org-jekyll org-linkany org-mac-iCal org-mac-link org-magit org-mime org-mobile-sync org-mru-clock org-multiple-keymap org-notebook org-octopress org-outlook org-password-manager org-pomodoro org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync org-sync-snippets org-table-comment org-table-sticky-header org-tfl org-themis org-time-budgets org-toodledo org-tracktable org-transform-tree-table org-tree-slide org-vcard org-wc org-webpage org-wunderlist org2blog org2elcomment org2issue org2jekyll org2nikola organic-green-theme orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header org-ac bison-mode async-await org-projectile projectile projectile-codesearch projectile-git-autofetch ob-async ob-sql-mode org-babel-eval-in-repl org-bookmark-heading org-caldav org-cliplink org-dashboard org-doing org-download org-easy-img-insert org-edit-latex org-ehtml org-fstree org-journal org-link-travis org-page org-parser org-pdfview org-present org-presie org-preview-html fireplace spotify ido-vertical-mode ox-gfm gnuplot gnuplot-mode typoscript-mode prolog realgud web-mode racket-mode org-jira nasm-mode 2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
  '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
@@ -507,6 +510,8 @@ With argument, do this that many times."
 	    (local-set-key (kbd "C-c a t") 'org-todo-list)))
 (eval-after-load "org"
   '(require 'ox-md nil t))
+(eval-after-load "org"
+  '(require 'ox-gfm nil t))
 
 (setq org-export-with-toc nil)
 
@@ -520,7 +525,11 @@ With argument, do this that many times."
    (shell . t)
    (java . t)
    (emacs-lisp . t)
+   (prolog . t)
    (C . t)))
+
+(require 'ob-async)
+(add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
@@ -610,10 +619,20 @@ With argument, do this that many times."
 ;; This stops the stupid log messages from jedi mode
 ;; (jedi:install-server )
 
-(defun add-python-shebang ()
-  (interactive)
+(defvar python-base-shebang "#!/usr/bin/env python")
+
+(defun _insert-python-shebang (ending)
   (goto-char 0)
-  (insert "#!/usr/bin/env python3\n"))
+  (insert (concat python-base-shebang ending)))
+
+(defun insert-python-shebang ()
+  (interactive)
+  (_insert-python-shebang "\n"))
+
+(defun insert-python3-shebang ()
+  (interactive)
+  (_insert-python-shebang "3\n"))
+
 
 
 (when (executable-find "ipython")
@@ -637,6 +656,9 @@ With argument, do this that many times."
 (defalias 'sir 'string-insert-rectangle)
 (defalias 'org-insert-timestamp-inactive 'org-time-stamp-inactive)
 
+;; Ido config
+(setq ido-create-new-buffer 'always
+	  ido-use-filename-at-point nil)
 ;; Markdown
 (add-hook 'markdown-mode 'markdown-preview-mode)
 (add-hook 'markdown-mode 'markdown-preview-open-browser)
@@ -651,6 +673,17 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c r p") 'run-python)
 
 (set-face-attribute 'default nil :height (if osx 125 100))
+
+;; Sets multiple buffer names to prefix with path
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; Saves things from clipboard if emacs text is
+;; killed before the clipboard text was yanked
+(setq save-interprogram-paste-before-kill t)
+
+;; Magit config
+(global-set-key (kbd "C-x g") 'magit-status)
 
 ;; Global modes
 (define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
