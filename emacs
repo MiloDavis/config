@@ -1,4 +1,4 @@
-;; -*- mode: Lisp;-*-
+;; -*- mode: emacs-lisp ;-*-
 (require 'cl)
 
 (defvar osx (equal system-type 'darwin))
@@ -12,6 +12,10 @@
 
 ;; Set open notes.org key binding
 (defvar notes-directory "~/notes/")
+(defun open-notes-file (file)
+  "FILE The name of the file to be oppened."
+  (lexical-let ((file file))
+	(lambda () (interactive) (find-file (concat notes-directory file)))))
 (defvar research-notes "research.org")
 (defvar general-notes "general.org")
 (defvar misc-notes "misc.org")
@@ -21,22 +25,24 @@
 (defvar analysis-notes "analysis.org")
 (defvar hacks-notes "hacks.org")
 (defvar course-notes "courses.org")
-(global-set-key (kbd "C-c n g") (lambda() (interactive) (find-file (concat notes-directory general-notes))))
-(global-set-key (kbd "C-c n r") (lambda() (interactive) (find-file (concat notes-directory research-notes))))
-(global-set-key (kbd "C-c n m") (lambda() (interactive) (find-file (concat notes-directory misc-notes))))
-(global-set-key (kbd "C-c n s") (lambda() (interactive) (find-file (concat notes-directory scouting-notes))))
-(global-set-key (kbd "C-c n n") (lambda() (interactive) (find-file (concat notes-directory nutrons-notes))))
-(global-set-key (kbd "C-c n p") (lambda() (interactive) (find-file (concat notes-directory personal-notes))))
-(global-set-key (kbd "C-c n a") (lambda() (interactive) (find-file (concat notes-directory analysis-notes))))
-(global-set-key (kbd "C-c n h") (lambda() (interactive) (find-file (concat notes-directory hacks-notes))))
-(global-set-key (kbd "C-c n c") (lambda() (interactive) (find-file (concat notes-directory course-notes))))
+(defvar tezos-notes "tezos.org")
+(global-set-key (kbd "C-c n g") (open-notes-file general-notes))
+(global-set-key (kbd "C-c n r") (open-notes-file research-notes))
+(global-set-key (kbd "C-c n m") (open-notes-file misc-notes))
+(global-set-key (kbd "C-c n s") (open-notes-file scouting-notes))
+(global-set-key (kbd "C-c n n") (open-notes-file nutrons-notes))
+(global-set-key (kbd "C-c n p") (open-notes-file personal-notes))
+(global-set-key (kbd "C-c n a") (open-notes-file analysis-notes))
+(global-set-key (kbd "C-c n h") (open-notes-file hacks-notes))
+(global-set-key (kbd "C-c n c") (open-notes-file course-notes))
+(global-set-key (kbd "C-c n t") (open-notes-file tezos-notes))
 (setq org-agenda-files '("~/notes/"))
 
 (defun my/turn-off-linum-mode ()
   (linum-mode -1))
 
 ;; Modes for file types
-(add-to-list 'auto-mode-alist '("\\emacs\\'" . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '("emacs'" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.scsh\\'" . scheme-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
@@ -262,7 +268,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-	("ad9747dc51ca23d1c1382fa9bd5d76e958a5bfe179784989a6a666fe801aadf2" "4156d0da4d9b715c6f7244be34f2622716fb563d185b6facedca2c0985751334" "51897d0e185a9d350a124afac8d5e95cda53e737f3b33befc44ab02f2b03dab1" "89b5c642f4bbcf955215c8f756ae352cdc6b7b0375b01da1f1aa5fd652ae822e" "6e4f8aba68e6934ad0e243f2fc7e6778d87f7d9b16e069cb9fec0cfa7f2f845a" "bb749a38c5cb7d13b60fa7fc40db7eced3d00aa93654d150b9627cabd2d9b361" "4bf9b00abab609ecc2a405aa25cc5e1fb5829102cf13f05af6a7831d968c59de" "0dfa1f356bdb48aa03088d4034b90c65290eb4373565f52f629fdee0af92a444" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+	("d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
@@ -278,11 +284,174 @@
 	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc")))
  '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
  '(kill-ring-max 100000)
+ '(magit-push-current-set-remote-if-missing (quote default))
  '(org-directory "~/notes")
  '(org-src-tab-acts-natively t)
-  '(package-selected-packages
+ '(org-trello-current-prefix-keybinding "C-c o")
+ '(package-selected-packages
    (quote
-	(ox-jira ox-twbs emacsql emacsql-mysql mysql-to-org mysql2sqlite org-agenda-property org-alert org-attach-screenshot org-autolist org-blog org-board org-brain org-capture-pop-frame org-chinese-utils org-clock-csv org-commentary org-context org-cua-dwim org-dotemacs org-dp org-drill-table org-dropbox org-elisp-help org-email org-evil org-gcal org-gnome org-grep org-if org-iv org-jekyll org-linkany org-mac-iCal org-mac-link org-magit org-mime org-mobile-sync org-mru-clock org-multiple-keymap org-notebook org-octopress org-outlook org-password-manager org-pomodoro org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync org-sync-snippets org-table-comment org-table-sticky-header org-tfl org-themis org-time-budgets org-toodledo org-tracktable org-transform-tree-table org-tree-slide org-vcard org-wc org-webpage org-wunderlist org2blog org2elcomment org2issue org2jekyll org2nikola organic-green-theme orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header org-ac bison-mode async-await org-projectile projectile projectile-codesearch projectile-git-autofetch ob-async ob-sql-mode org-babel-eval-in-repl org-bookmark-heading org-caldav org-cliplink org-dashboard org-doing org-download org-easy-img-insert org-edit-latex org-ehtml org-fstree org-journal org-link-travis org-page org-parser org-pdfview org-present org-presie org-preview-html fireplace spotify ido-vertical-mode ox-gfm gnuplot gnuplot-mode typoscript-mode prolog realgud web-mode racket-mode org-jira nasm-mode 2048-game idris-mode org-clock-today htmlize matlab-mode color-theme auto-complete bury-successful-compilation latex-math-preview company-jedi ob-applescript ob-axiom ob-browser ob-coffee ob-cypher ob-dart ob-diagrams ob-elixir ob-go ob-http ob-ipython ob-kotlin ob-lfe ob-ml-marklogic ob-mongo ob-nim ob-php ob-prolog ob-redis ob-restclient ob-sagemath ob-smiles ob-sml ob-spice ob-swift ob-translate ob-typescript org-clock-convenience company-coq latex-extra cdlatex org-beautify-theme leuven-theme marmalade-client haskell-mode yaml-mode yafolding wrap-region web-completion-data vlf utop unbound tuareg totd tabbar symon solarized-theme smooth-scroll scribble-mode scheme-here scheme-complete scala-mode2 repl-toggle regex-tool pyvenv php-mode origami org-bullets ocp-indent nodejs-repl nim-mode multi-term markdown-mode latex-preview-pane jumblr json-mode js2-mode jedi jdee irony iedit highlight-indentation gruvbox-theme god-mode github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fastnav faff-theme exec-path-from-shell evil-visual-mark-mode ensime emacs-eclim elm-mode elisp-depend el-get egg edts edit-color-stamp ecb-snapshot ecb docean discover-my-major discover diff-hl debbugs darkroom column-enforce-mode color-theme-solarized color-theme-cobalt cl-lib-highlight cl-generic chicken-scheme buffer-move bookmark+ auto-complete-clang auto-auto-indent auctex anzu ample-zen-theme ac-math ac-ispell ac-html)))
+	(2048-game
+	 ac-html
+	 ac-ispell
+	 ac-math
+	 async-await
+	 auctex
+	 auto-auto-indent
+	 auto-complete
+	 auto-complete-clang
+	 bison-mode
+	 bury-successful-compilation
+	 cdlatex
+	 chicken-scheme
+	 cl-generic
+	 cl-lib-highlight
+	 color-theme
+	 column-enforce-mode
+	 company-coq
+	 company-jedi
+	 debbugs
+	 diff-hl
+	 discover
+	 discover-my-major
+	 edit-color-stamp
+	 edts
+	 egg
+	 el-get
+	 elisp-depend
+	 elm-mode
+	 emacs-eclim
+	 emacsql
+	 emacsql-mysql
+	 ensime
+	 exec-path-from-shell
+	 fireplace
+	 flycheck-clangcheck
+	 flycheck-ocaml
+	 flyspell-lazy
+	 frame-cmds
+	 framemove
+	 git-timemachine
+	 github-clone
+	 gnuplot
+	 gnuplot-mode
+	 haskell-mode
+	 highlight-indentation
+	 htmlize
+	 ido-vertical-mode
+	 idris-mode
+	 iedit
+	 irony
+	 jdee
+	 jedi
+	 js2-mode
+	 json-mode
+	 jumblr
+	 latex-extra
+	 latex-math-preview
+	 latex-preview-pane
+	 leuven-theme
+	 markdown-mode
+	 marmalade-client
+	 multi-term
+	 mysql-to-org
+	 mysql2sqlite
+	 nasm-mode
+	 nodejs-repl
+	 ob-async
+	 ob-http
+	 ob-ipython
+	 ob-kotlin
+	 ob-mongo
+	 ob-php
+	 ob-prolog
+	 ob-sql-mode
+	 ob-swift
+	 ob-typescript
+	 ocp-indent
+	 org-ac
+	 org-babel-eval-in-repl
+	 org-clock-convenience
+	 org-clock-today
+	 org-dashboard
+	 org-download
+	 org-dp
+	 org-drill-table
+	 org-easy-img-insert
+	 org-edit-latex
+	 org-elisp-help
+	 org-fstree
+	 org-gnome
+	 org-grep
+	 org-jira
+	 org-journal
+	 org-link-travis
+	 org-mac-link
+	 org-magit
+	 org-notebook
+	 org-octopress
+	 org-outlook
+	 org-page
+	 org-parser
+	 org-password-manager
+	 org-pdfview
+	 org-pomodoro
+	 org-present
+	 org-preview-html
+	 org-projectile
+	 org-protocol-jekyll
+	 org-publish-agenda
+	 org-random-todo
+	 org-readme
+	 org-recent-headings
+	 org-redmine
+	 org-ref
+	 org-repo-todo
+	 org-review
+	 org-rtm
+	 org-seek
+	 org-sticky-header
+	 org-sync-snippets
+	 org-table-comment
+	 org-tree-slide
+	 org-vcard
+	 org-wc
+	 orgbox
+	 orgit
+	 orglink
+	 orglue
+	 orgtbl-aggregate
+	 orgtbl-ascii-plot
+	 orgtbl-join
+	 orgtbl-show-header
+	 ox-gfm
+	 ox-jira
+	 ox-twbs
+	 php-mode
+	 projectile
+	 projectile-codesearch
+	 projectile-git-autofetch
+	 prolog
+	 pyvenv
+	 racket-mode
+	 realgud
+	 regex-tool
+	 repl-toggle
+	 scala-mode2
+	 scheme-complete
+	 scheme-here
+	 scribble-mode
+	 symon
+	 tabbar
+	 tuareg
+	 unbound
+	 utop
+	 vlf
+	 web-completion-data
+	 web-mode
+	 which-key
+	 wrap-region
+	 yafolding
+	 yaml-mode)))
  '(paradox-github-token t)
  '(setq ecb-tip-of-the-day))
 (custom-set-faces
@@ -307,7 +476,7 @@
 ;; sets backtab to remove 4 spaces
 (global-set-key (kbd "<backtab>") 'un-indent-by-removing-4-spaces)
 (defun un-indent-by-removing-4-spaces ()
-  "remove 4 spaces from beginning of of line"
+  "Remove 4 spaces from beginning of of line."
   (interactive)
   (save-excursion
     (save-match-data
@@ -488,11 +657,9 @@ With argument, do this that many times."
 				  (kill-new (buffer-file-name))
 				  (message (concat "Copied path " (buffer-file-name ) " to kill ring"))))
 
-(fset 'make-jira-link
-   "\C-w[[https://basistech.atlassian.net/browse/\C-y][\C-y]]")
-
-
 ;; Org mode
+(require 'htmlize)
+(require 'org)
 (setq org-src-fontify-natively t)
 (add-hook 'org-mode-hook 'my/turn-off-linum-mode)
 (define-key global-map "\C-cl" 'org-store-link)
@@ -512,7 +679,6 @@ With argument, do this that many times."
   '(require 'ox-md nil t))
 (eval-after-load "org"
   '(require 'ox-gfm nil t))
-
 (setq org-export-with-toc nil)
 
 (setq org-babel-sh-command "/bin/bash")
@@ -582,7 +748,7 @@ With argument, do this that many times."
 (setq ido-everywhere t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-create-new-buffer 'always)
-(setq ido-file-extensions-order '(".rkt" ".ml" ".py" ".java" ".txt" ".emacs" ".php" ".js" ".tex" ".scrbl"))
+(setq ido-file-extensions-order '(".org" ".ml" ".rkt" ".py" ".java" ".txt" ".emacs" ".php" ".js" ".html" ".tex" ".scrbl"))
 
 
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
@@ -595,7 +761,7 @@ With argument, do this that many times."
 (defun load-proof ()
   (interactive)
   (load-library "proof"))
-;;(load-proof)
+;; (load-proof)
 (setq proof-splash-seen t)
 (setq proof-three-window-mode-policy 'hybrid)
 (setq proof-script-fly-past-comments t)
@@ -614,26 +780,32 @@ With argument, do this that many times."
 ;; (setq jedi:setup-keys t)                      ; optional
 (setq jedi:complete-on-dot t)                 ; optional
 (autoload 'jedi:setup "jedi" nil t)
-(setq jedi:server-command
-	  (list "python" "~/.emacs.d/elpa/jedi-core-20160709.722/jediepcserver.py"))
-;; This stops the stupid log messages from jedi mode
-;; (jedi:install-server )
 
 (defvar python-base-shebang "#!/usr/bin/env python")
 
-(defun _insert-python-shebang (ending)
+(defun _insert-at-beginning-of-file (str)
+  (interactive)
   (goto-char 0)
-  (insert (concat python-base-shebang ending)))
+  (insert str))
+
+(defun _insert-python-shebang (ending)
+  "ENDING The last characters of the python shebang.  Characters are insterted after `python-base-shebang`."
+  (_insert-at-beginning-of-file (concat python-base-shebang ending)))
 
 (defun insert-python-shebang ()
+  "Insert a shebang line for default python (python2)."
   (interactive)
   (_insert-python-shebang "\n"))
 
 (defun insert-python3-shebang ()
+  "Insert a shebang line for python3."
   (interactive)
   (_insert-python-shebang "3\n"))
 
-
+(defun insert-bash-shebang ()
+  "Insert a shebang line for bash."
+  (interactive)
+  (_insert-at-beginning-of-file "#!/usr/bin/env bash\n"))
 
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
@@ -646,6 +818,25 @@ With argument, do this that many times."
            "/usr/bin/open"
            (list "-a" "firefox" url))))
 (setq flymd-browser-open-function 'my-flymd-browser-function)
+
+;; Improved splitting functions
+;; https://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury/
+(defun vsplit-last-buffer ()
+  (interactive)
+  (split-window-vertically)
+  (other-window 1 nil)
+  (switch-to-next-buffer)
+  )
+(defun hsplit-last-buffer ()
+  (interactive)
+   (split-window-horizontally)
+  (other-window 1 nil)
+  (switch-to-next-buffer)
+  )
+
+(global-set-key (kbd "C-x 2") 'vsplit-last-buffer)
+(global-set-key (kbd "C-x 3") 'hsplit-last-buffer)
+
 
 
 ;; Tramp mode
@@ -685,19 +876,19 @@ With argument, do this that many times."
 ;; Magit config
 (global-set-key (kbd "C-x g") 'magit-status)
 
-;; Global modes
-(define-globalized-minor-mode global-wrap-region-mode wrap-region-mode
-  (lambda () (wrap-region-mode 1)))
 (require 'diff-hl)
 (define-globalized-minor-mode global-diff-hl-mode diff-hl-mode
   (lambda () (diff-hl-mode 1)))
+
+;; Global modes
+(global-diff-hl-mode t)
 (global-linum-mode t)
 (delete-selection-mode 1)
 (show-paren-mode 1)
 (require 'auto-complete)
 (global-auto-complete-mode t)
 (column-number-mode)
-(global-diff-hl-mode t)
+(which-key-mode)
 
 (require 'color-theme)
 (cond ((window-system )
