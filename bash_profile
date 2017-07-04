@@ -37,7 +37,7 @@ switchd () { pushd; }
 alias sd="switchd"
 
 function lc-dir () {
-	find . -type f | xargs -I{} wc -l {} | cut -d' ' -f1 | paste -sd+ | bc
+	find . -type f ! -executable | xargs -I{} wc -l {} | cut -d' ' -f1 | paste -sd+ | bc
 }
 
 # Emacsclient
