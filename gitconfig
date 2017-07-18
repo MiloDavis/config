@@ -23,3 +23,6 @@
 	aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /' | sort
 	ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
     theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+    throw-away = !git checkout -- .
+[core]
+	excludesfile = /Users/milodavis/.gitignore_global

@@ -1,5 +1,6 @@
 # -*- mode: sh -*-
 set -o pipefail
+export HISTCONTROL=erasedups
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 export PATH=/Users/milodavis/racket/fork/racket/bin/:$PATH
@@ -22,6 +23,7 @@ export PS1="\n\[\e[34m\]\w\[\e[m\]\\n$ "
 alias star-wars="telnet towel.blinkenlights.nl"
 
 alias reload="source ~/.bash_profile"
+
 function search () {
     find . -iname "*$1*";
 }
@@ -37,6 +39,7 @@ switchd () { pushd; }
 alias sd="switchd"
 
 function lc-dir () {
+
 	find . -type f ! -executable | xargs -I{} wc -l {} | cut -d' ' -f1 | paste -sd+ | bc
 }
 
@@ -86,4 +89,4 @@ function CAPS () {
 }
 
 # OPAM configuration
-. /Users/milodavis/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+. ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true

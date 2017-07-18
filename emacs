@@ -60,6 +60,7 @@
 (global-set-key (kbd "C-c n h") (open-notes-file "hacks.org"))
 (global-set-key (kbd "C-c n c") (open-notes-file "courses.org"))
 (global-set-key (kbd "C-c n t") (open-notes-file "tezos.org"))
+(global-set-key (kbd "C-c n j") (open-notes-file "journal.org"))
 
 (require 'linum)
 (defun my/turn-off-linum-mode ()
@@ -71,6 +72,16 @@
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.s\\'" . nasm-mode))
+
+(use-package markdown-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (add-hook 'markdown-mode-hook 'visual-line-mode)
+  (add-hook 'markdown-mode-hook (lambda ()
+                                  (local-unset-key (kbd "M-p"))
+                                  (local-unset-key (kbd "M-n"))
+                                  (local-unset-key (kbd "M-<down>"))
+                                  (local-unset-key (kbd "M-<up>")))))
 
 (setq-default tab-width 4)
 
@@ -149,6 +160,7 @@
 	("8meet" "⊓")
 	("8sqsubseteq" "⊑")
 	("8nobreak" "﻿")
+    ("8tez" "ꜩ")
 	))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
@@ -190,6 +202,7 @@
       ad-do-it)))
 
 (global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-O") (lambda () (interactive) (other-window -1)))
 
 ;; Zap up to character
 (autoload 'zap-up-to-char "misc"
@@ -210,6 +223,9 @@
 
 ;; Shell keybinding and settings
 (global-set-key (kbd "C-;") 'shell)
+(add-hook 'shell-mode-hook (lambda ()
+                             (setq comment-start "# ")
+                             (setq comment-end "")))
 ;; (comint-process-echoes 't)
 ;; This code allows programs to keep their formatting when shell frame size changes
 (defun comint-fix-window-size ()
@@ -243,9 +259,9 @@
 
 ;; Sets autosave directory
 (setq backup-directory-alist
-      `((".*" . "~/.saves")))
+      `((".*" . "~/.saves/")))
 (setq auto-save-file-name-transforms
-      `((".*" "~/.saves" t)))
+      `((".*" "~/.saves/" t)))
 
 ;; Makes scripts executable if file is a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
@@ -263,32 +279,31 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-	("d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
+    ("d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
    (quote
-	(("left2"
-	  (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
-	  (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
+    (("left2"
+      (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
+      (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
  '(ecb-options-version "2.40")
  '(hl-sexp-background-color "#efebe9")
  '(ido-ignore-files
    (quote
-	("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc" "*.native" "*.byte")))
+    ("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc" "*.native" "*.byte")))
  '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
- '(kill-ring-max 100000)
  '(org-directory "~/notes")
  '(org-src-tab-acts-natively t)
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-	(tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-gnome org-fstree org-elisp-help org-edit-latex org-easy-img-insert org-drill-table org-dp org-download org-dashboard org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-typescript ob-swift ob-sql-mode ob-prolog ob-php ob-mongo ob-kotlin ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra jumblr json-mode js2-mode jedi jdee irony iedit idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell ensime emacsql-mysql elm-mode elisp-depend el-get egg edts edit-color-stamp discover-my-major discover diff-hl debbugs company-jedi company-coq column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-complete-clang auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-gnome org-fstree org-elisp-help org-edit-latex org-easy-img-insert org-drill-table org-dp org-download org-dashboard org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-typescript ob-swift ob-sql-mode ob-prolog ob-php ob-mongo ob-kotlin ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra jumblr json-mode js2-mode jedi jdee irony iedit idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell ensime emacsql-mysql elm-mode elisp-depend el-get egg edts edit-color-stamp discover-my-major discover diff-hl debbugs company-coq column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-complete-clang auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
  '(selected-packages
    (quote
-	(ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent auto-complete auto-complete-clang bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode company-jedi debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
+    (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent auto-complete auto-complete-clang bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
  '(setq ecb-tip-of-the-day)
  '(which-key-mode t))
 
@@ -318,7 +333,13 @@
 (global-set-key (kbd "C-c k") 'close-and-kill-this-pane)
 
 
-
+;; Kill ring settings
+(setq kill-ring-max 100000)
+(defun clear-kill-ring ()
+  "Remove all entries from the kill ring."
+  (interactive)
+  (progn (setq kill-ring nil)
+         (garbage-collect)))
 
 ;; Sets path variable
 (exec-path-from-shell-initialize)
@@ -390,6 +411,8 @@ With argument, do this that many times."
 			   ("C-c <down>" . merlin-type-enclosing-go-down)))
 (use-package ocp-indent)
 (use-package tuareg-mode
+  :init
+  (add-hook 'tuareg-mode-hook 'merlin-mode)
   :config
   (dolist
 	  (var (car (read-from-string
@@ -398,11 +421,9 @@ With argument, do this that many times."
   (setq auto-mode-alist 
 		(append '(("\\.ml[ily]?$" . tuareg-mode))
 				auto-mode-alist))
-  (add-hook 'tuareg-mode-hook 'merlin-mode)
   (setq auto-mode-alist 
       (append '(("\\.ml[ily]?$" . tuareg-mode))
 			  auto-mode-alist))
-  (add-hook 'tuareg-mode-hook 'auto-complete-mode)
   :bind (:map tuareg-mode-map
 			  ("M-C-." . completion-at-point)))
 (use-package utop
@@ -488,7 +509,6 @@ With argument, do this that many times."
 	 (prolog . t)
 	 (C . t)))
   (setq org-export-with-toc nil)
-  (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)
   (setq org-clock-persist 'history)
   (org-clock-persistence-insinuate)
   (defalias 'org-insert-timestamp-inactive 'org-time-stamp-inactive)
@@ -520,6 +540,7 @@ With argument, do this that many times."
 (defun duplicate-line ()
   "Copy a line onto the line below."
   (interactive)
+  (move-beginning-of-line 1)
   (move-beginning-of-line 1)
   (kill-line)
   (yank)
@@ -562,7 +583,8 @@ With argument, do this that many times."
 		'(".org" ".ml" ".rkt" ".py" "Makefile" ".java" ".txt" ".emacs" ".php" ".js" ".html" ".tex" ".scrbl"))
   (setq ido-create-new-buffer 'always
 		ido-use-filename-at-point nil)
-  (ido-mode 1))
+  (ido-mode 1)
+  (setq ido-use-filename-at-point 'guess))
 
 
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
@@ -574,7 +596,7 @@ With argument, do this that many times."
   (normal-top-level-add-subdirs-to-load-path))
 (defvar proof-site-location "~/.emacs.d/lisp/PG/generic/proof-site.elc")
 (if (file-exists-p proof-site-location)
-	(progn (load proof-site-location)
+	(progn (load proof-site-location nil t)
 		   (require 'proof-site)
 		   (setq proof-splash-seen t)
 		   (setq proof-three-window-mode-policy 'hybrid)
@@ -589,11 +611,10 @@ With argument, do this that many times."
 							 (flycheck-mode -1)))
 
 ;; Jedi mode
-(use-package jedi
-  :config
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:complete-on-dot t)
-  (autoload 'jedi:setup "jedi" nil t))
+;; (use-package jedi
+;;   :config
+;;   (setq jedi:complete-on-dot t)
+;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
 
 (defvar python-base-shebang "#!/usr/bin/env python")
 
@@ -652,6 +673,7 @@ STR String to be inserted"
 (setq ring-bell-function 'ignore)
 
 (defalias 'sir 'string-insert-rectangle)
+(global-set-key (kbd "C-c R") 'string-insert-rectangle)
 
 ;; Markdown
 (add-hook 'markdown-mode 'markdown-preview-mode)
@@ -681,9 +703,36 @@ STR String to be inserted"
 (use-package magit
   :init (global-set-key (kbd "C-x g") 'magit-status)
   :config (setq magit-push-current-set-remote-if-missing (quote default)))
-  
 
-(load-file "~/config/michelson-mode/michelson-mode.el")
+(use-package ibuffer
+  :config
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (setq ibuffer-saved-filter-groups
+        '(("home"
+           ("Org" (mode . org-mode))
+           ("OCaml" (or (mode . tuareg-mode)
+                        (mode . caml-mode)))
+           ("Michelson" (or (mode . michelson-mode)
+                            (name . "\*.tez")
+                            (name . "\*.tz")))
+           ("Coq" (mode . coq-mode))
+           ("Shell" (or (mode . shell)
+                        (name . "\*shell\*")
+                        (name . "\*.sh")))
+           ("Magit" (name . "\*magit"))
+           ("Man" (name . "\*man\*"))
+           ("Help" (or (name . "\*Help\*")
+                       (name . "\*Apropos\*")
+                       (name . "\*info\*"))))))
+  (add-hook 'ibuffer-mode-hook
+            '(lambda ()
+               (ibuffer-auto-mode 1)
+               (ibuffer-switch-to-saved-filter-groups "home")))
+  (setq ibuffer-expert t)
+  (setq ibuffer-show-empty-filter-groups nil))
+
+;; Loads the michelson mode I've been developing
+(load "~/config/michelson-mode/michelson-mode.el" nil t)
 
 ;; Global modes
 (use-package diff-hl
