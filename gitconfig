@@ -24,5 +24,6 @@
 	ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
     theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
     throw-away = !git checkout -- .
+	upstream = "!f() { git branch --set-upstream-to=origin/$(git rev-parse --abbrev-ref HEAD); }; f"
 [core]
 	excludesfile = /Users/milodavis/.gitignore_global
