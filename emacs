@@ -56,11 +56,9 @@
 (global-set-key (kbd "C-c n s") (open-notes-file "scouting.org"))
 (global-set-key (kbd "C-c n n") (open-notes-file "nutrons.org"))
 (global-set-key (kbd "C-c n p") (open-notes-file "personal.org"))
-(global-set-key (kbd "C-c n a") (open-notes-file "analysis.org"))
 (global-set-key (kbd "C-c n h") (open-notes-file "hacks.org"))
 (global-set-key (kbd "C-c n c") (open-notes-file "courses.org"))
 (global-set-key (kbd "C-c n t") (open-notes-file "tezos.org"))
-(global-set-key (kbd "C-c n j") (open-notes-file "journal.org"))
 
 (require 'linum)
 (defun my/turn-off-linum-mode ()
@@ -108,12 +106,6 @@
 ;; Sets eval-buffer key binding
 (global-set-key (kbd "C-c c C-e") 'eval-buffer)
 
-;; Sets reverse window bindings
-(global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1)))
-
-;; Sets indent-region keybinding
-(global-set-key (kbd "C-c i") 'indent-region)
-(global-set-key (kbd "C-M-q ") 'prog-indent-sexp)
 
 ;; Sets man key binding
 (global-set-key (kbd "C-c m") 'man)
@@ -201,8 +193,12 @@
     (when (= pos (point))
       ad-do-it)))
 
+
+;; Window toggling
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-O") (lambda () (interactive) (other-window -1)))
+(global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1)))
+(global-set-key (kbd "C-x o") 'other-window)
 
 ;; Zap up to character
 (autoload 'zap-up-to-char "misc"
@@ -279,7 +275,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
+    ("f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
@@ -299,7 +295,7 @@
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-gnome org-fstree org-elisp-help org-edit-latex org-easy-img-insert org-drill-table org-dp org-download org-dashboard org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-typescript ob-swift ob-sql-mode ob-prolog ob-php ob-mongo ob-kotlin ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra jumblr json-mode js2-mode jedi jdee irony iedit idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell ensime emacsql-mysql elm-mode elisp-depend el-get egg edts edit-color-stamp discover-my-major discover diff-hl debbugs company-coq column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-complete-clang auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (o-blog abyss-theme htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-gnome org-fstree org-elisp-help org-edit-latex org-easy-img-insert org-drill-table org-dp org-download org-dashboard org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-typescript ob-swift ob-sql-mode ob-prolog ob-php ob-mongo ob-kotlin ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra jumblr json-mode js2-mode jedi jdee irony iedit idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell ensime emacsql-mysql elm-mode elisp-depend el-get egg edts edit-color-stamp discover-my-major discover diff-hl debbugs company-coq column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-complete-clang auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
  '(selected-packages
    (quote
@@ -312,10 +308,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(magit-diff-added ((t (:background "black" :foreground "green3"))))
- '(magit-diff-removed ((t (:background "black" :foreground "red3")))))
+ )
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+(use-package projectile
+  :init (projectile-global-mode)
+  :config
+  (local-unset-key (kbd "C-c p f"))
+  :bind (("C-c M-f" . projectile-find-file)))
+
 
 ;; VLF mode
 (use-package vlf-setup
@@ -350,7 +352,7 @@
 ;; Macros:
 (fset 'clear-repl
       (lambda (&optional arg)
-		"Keyboard macro." 
+		"Remove all data from the repl." 
 		(interactive "p") 
 		(kmacro-exec-ring-item 
 		 (quote ([134217790 1 67108896 5 backspace 16 16 67108896 134217788 backspace 14 backspace 134217848 
@@ -397,10 +399,11 @@ With argument, do this that many times."
 (setq inhibit-startup-message t) ; Emacs splash screen
 
 ;; ocaml
+(load-file "~/.opam/tezos/share/emacs/site-lisp/merlin.el")
+
 (use-package merlin-mode
   :config
   (setq merlin-use-auto-complete-mode t)
-  (setq merlin-command "~/.opam/system/bin/ocamlmerlin")
   (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
   (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
   (setq merlin-use-auto-complete-mode 'easy)
@@ -474,6 +477,7 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c b h") 'split-window-below)
 (global-set-key (kbd "C-c b n") 'rename-buffer)
 (global-set-key (kbd "C-c b t") 'toggle-window-split)
+(global-set-key (kbd "C-c b b") 'bury-buffer)
 (global-set-key (kbd "C-c b w")
 				(lambda ()
 				  (interactive)
@@ -492,7 +496,8 @@ With argument, do this that many times."
   (define-key global-map "\C-cl" 'org-store-link)
   (setq org-log-done t)
   (setq org-startup-folded t)
-  (setq org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
+  (setq org-todo-keywords '((sequence "TODO" "|" "DONE")
+							(sequence "FEATURE" "PR_SUBMITTED" "BLOCKED" "|" "MERGED")))
   (add-hook 'org-mode-hook 'visual-line-mode)
   (use-package ox-md)
   (use-package ox-gfm)
@@ -518,6 +523,10 @@ With argument, do this that many times."
 	(search-backward-regexp "^*")
 	(next-line 1)
 	(insert ":PROPERTIES:\n:HTML_CONTAINER_CLASS: answers\n:END:\n"))
+  (defun toggle-modeline-time ()
+    (interactive)
+    (setq org-mode-line-string (not org-mode-line-string))
+    (sit-for 0))
   :bind (:map org-mode-map
 			  ("C-c C-M-f" . org-metaright)
 			  ("C-c C-M-b" . org-metaleft)
@@ -578,6 +587,7 @@ With argument, do this that many times."
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
   (setq ido-use-filename-at-point 'guess)
+  (setq ido-use-url-at-point nil)
   (setq ido-create-new-buffer 'always)
   (setq ido-file-extensions-order
 		'(".org" ".ml" ".rkt" ".py" "Makefile" ".java" ".txt" ".emacs" ".php" ".js" ".html" ".tex" ".scrbl"))
@@ -687,6 +697,7 @@ STR String to be inserted"
 (global-set-key (kbd "C-c r o") 'utop)
 (global-set-key (kbd "C-c r r") 'racket-repl)
 (global-set-key (kbd "C-c r p") 'run-python)
+(global-set-key (kbd "C-c r e") 'ielm)
 
 (set-face-attribute 'default nil :height (if osx 125 100))
 
@@ -719,6 +730,7 @@ STR String to be inserted"
            ("Shell" (or (mode . shell)
                         (name . "\*shell\*")
                         (name . "\*.sh")))
+           ("Dired" (mode . dired-mode))
            ("Magit" (name . "\*magit"))
            ("Man" (name . "\*man\*"))
            ("Help" (or (name . "\*Help\*")
@@ -731,12 +743,27 @@ STR String to be inserted"
   (setq ibuffer-expert t)
   (setq ibuffer-show-empty-filter-groups nil))
 
-;; Loads the michelson mode I've been developing
-(load "~/config/michelson-mode/michelson-mode.el" nil t)
+;; Loads michelson mode
+(load "~/tezos/repo/emacs/michelson-mode.el" nil t)
+
+(defun set-alphanet (alphanet)
+  (setq michelson-client-command
+        (if alphanet
+            "~/tezos/repo/scripts/alphanet.sh client"
+          "~/tezos/repo/tezos-client"))
+  (setq michelson-alphanet alphanet))
+
+(defun toggle-alphanet (&optional alphanet)
+  "Toggle whether Michelson is using the alphanet."
+  (interactive)
+  (set-alphanet (not michelson-alphanet)))
+
+(set-alphanet nil)
 
 ;; Global modes
 (use-package diff-hl
-  :config (global-diff-hl-mode t))
+  :config (global-diff-hl-mode t)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
 (global-linum-mode t)
 (delete-selection-mode 1)

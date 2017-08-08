@@ -8,4 +8,4 @@ function relink () {
 
 export -f relink
 
-find . -type f -maxdepth 1 | grep -v ".sh" | parallel -I {} relink {}
+find . -maxdepth 1 -type f | grep -v ".sh" | parallel -I {} relink {}

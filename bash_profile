@@ -12,6 +12,7 @@ export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/config/github_api_token)
 export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
 alias mv="mv -i"
 alias cp="cp -i"
+alias ack="ack -i"              # Make ack case insensitive
 alias ctags='/usr/local/bin/ctags'
 
 # export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
@@ -33,6 +34,7 @@ function wstrip () {
 }
 function every () { while True; do $*; sleep 1; done; }
 function every-nth () { interval=$1; shift; while True; do $*; sleep $interval; echo; done; }
+function repeat () { num_execs="$1"; shift; for i in `seq $num_execs`; do $*; done; }
 function alert () { terminal-notifier -message "$1"; }
 alias lcase="tr '[A-Z]' '[a-z]'"
 switchd () { pushd; }
@@ -76,9 +78,10 @@ if [[ "$OSTYPE" =~ "*darwin*" ]]; then
 fi
 
 if [[ "$OSTYPE" = *"darwin"* ]]; then
-	ssh-add ~/.ssh/ccis_github
-	ssh-add ~/.ssh/git-ec2
-	ssh-add ~/.ssh/github_rsa < /dev/null
+	ssh-add ~/.ssh/ccis_github 2> /dev/null
+	ssh-add ~/.ssh/git-ec2 2> /dev/null
+	ssh-add ~/.ssh/github 2> /dev/null
+	ssh-add ~/.ssh/gitlab 2> /dev/null
 fi
 
 # I somehow keep turning off my xmodmap configuration
@@ -87,6 +90,12 @@ fi
 function CAPS () {
 	setxkbmap; sleep 2; xmodmap ~/.xmodmap;
 }
+
+alias start-tezos-node="source ~/notes/init-tezos.sh"
+function alphanet () {
+    ~/tezos/repo/scripts/alphanet.sh "$@"
+}
+
 
 # OPAM configuration
 . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
