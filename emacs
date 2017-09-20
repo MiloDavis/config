@@ -12,6 +12,9 @@
 (unless (server-running-p)
   (server-start))
 
+(setq max-specpdl-size (* 1300 15))
+(setq max-lisp-eval-depth (* 800 30))
+
 ;; Packages
 (when (>= emacs-major-version 24)
   (require 'package)
@@ -35,7 +38,7 @@
 		  (package-installed-p package-name)))
   (use-package diminish)
   (use-package bind-key)
-  (global-set-key (kbd "C-c p") 'package-list-packages)
+  (global-set-key (kbd "C-c P") 'package-list-packages)
   )
 
 (setq vc-follow-symlinks t)
@@ -197,6 +200,10 @@
 ;; Window toggling
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-O") (lambda () (interactive) (other-window -1)))
+(global-set-key (kbd "M-0") 'delete-window)
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-2") 'vsplit-last-buffer)
+(global-set-key (kbd "M-3") 'hsplit-last-buffer)
 (global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "C-x o") 'other-window)
 
@@ -224,6 +231,7 @@
 (add-hook 'shell-mode-hook (lambda ()
                              (setq comment-start "# ")
                              (setq comment-end "")))
+(setq comint-input-ignoredups t)
 ;; (comint-process-echoes 't)
 ;; This code allows programs to keep their formatting when shell frame size changes
 (defun comint-fix-window-size ()
@@ -240,6 +248,9 @@
 (add-hook 'shell-mode-hook 'my-shell-mode-hook)
 (add-hook 'shell-mode-hook 'dirtrack-mode)
 (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+
 
 ;; Unsets frame suspension behavior in gui mode because I kept hitting it by accident
 (if (window-system )
@@ -277,7 +288,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
+    ("ba7917b02812fee8da4827fdf7867d3f6f282694f679b5d73f9965f45590843a" "c72a772c104710300103307264c00a04210c00f6cc419a79b8af7890478f380e" "f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
@@ -297,12 +308,39 @@
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (o-blog abyss-theme htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-gnome org-fstree org-elisp-help org-edit-latex org-easy-img-insert org-drill-table org-dp org-download org-dashboard org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-typescript ob-swift ob-sql-mode ob-prolog ob-php ob-mongo ob-kotlin ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra jumblr json-mode js2-mode jedi jdee irony iedit idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove frame-cmds flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell ensime emacsql-mysql elm-mode elisp-depend el-get egg edts edit-color-stamp discover-my-major discover diff-hl debbugs company-coq column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-complete-clang auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data ox-twbs org-pomodoro langtool yaml-mode o-blog htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-elisp-help org-edit-latex org-easy-img-insert org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-swift ob-sql-mode ob-prolog ob-php ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
- '(selected-packages
-   (quote
-    (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent auto-complete auto-complete-clang bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
+ '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
+ '(proof-shell-clear-goals-regexp
+   "No\\s-+more\\s-+subgoals\\.\\|Subtree\\s-proved!\\|Proof\\s-completed")
+ '(proof-shell-eager-annotation-end "\377\\|done\\]\\|</infomsg>\\|\\*\\*\\*\\*\\*\\*\\|) >")
+ '(proof-shell-eager-annotation-start "\376\\|\\[Reinterning\\|Warning:\\|TcDebug \\|<infomsg>")
+ '(proof-shell-eager-annotation-start-length 32)
+ '(proof-shell-end-goals-regexp "
+(dependent evars:")
+ '(proof-shell-error-regexp
+"^\\(Error:\\|Discarding pattern\\|Syntax error:\\|System Error:\\|User Error:\\|User error:\\|Anomaly[:.]\\|Toplevel input[,]\\)")
+ '(proof-shell-font-lock-keywords (quote coq-font-lock-keywords-1))
+ '(proof-shell-init-cmd
+(quote
+ ("Add Search Blacklist \"Private_\" \"_subproof\". ")))
+ '(proof-shell-interactive-prompt-regexp "TcDebug ")
+ '(proof-shell-interrupt-regexp "User Interrupt.")
+'(proof-shell-proof-completed-regexp
+"No\\s-+more\\s-+subgoals\\.\\|Subtree\\s-proved!\\|Proof\\s-completed")
+ '(proof-shell-restart-cmd "Reset Initial.
+ ")
+ '(proof-shell-result-end "\372 End Pbp result \373")
+ '(proof-shell-result-start "\372 Pbp result \373")
+ '(proof-shell-start-goals-regexp "[0-9]+\\(?: focused\\)? subgoals?")
+ '(proof-shell-start-silent-cmd "Set Silent. ")
+ '(proof-shell-stop-silent-cmd "Unset Silent. ")
+ '(python-shell-interpreter "ipython")
+'(selected-packages
+(quote
+ (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
  '(setq ecb-tip-of-the-day)
+ '(shell-pushd-regexp "pushd")
  '(which-key-mode t))
 
 (custom-set-faces
@@ -310,22 +348,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(michelson-stack-highlight-face ((t (:background "gray86")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (use-package projectile
-  :init (projectile-global-mode)
-  :config
-  (local-unset-key (kbd "C-c p f"))
-  :bind (("C-c M-f" . projectile-find-file)))
+  :init (projectile-global-mode))
 
 
 ;; VLF mode
 (use-package vlf-setup
   :config (add-hook 'vlf-mode-hook 'vlf-toggle-follow))
-
-(global-set-key (kbd "M-Y") (lambda () (interactive) (yank-pop -1)))
 
 ;; Sets kill and close
 (defun close-and-kill-this-pane ()
@@ -339,6 +372,7 @@
 
 ;; Kill ring settings
 (setq kill-ring-max 100000)
+(global-set-key (kbd "M-Y") (lambda () (interactive) (yank-pop -1)))
 (defun clear-kill-ring ()
   "Remove all entries from the kill ring."
   (interactive)
@@ -366,7 +400,10 @@
 (global-set-key (kbd "C-c b a") 'clear-repl)
 
 (fset 'backward-delete-sexp
-      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([67108896 134217730 backspace] 0 "%d")) arg)))
+      (lambda (&optional arg)
+        "Keyboard macro."
+        (interactive "p")
+        (kmacro-exec-ring-item (quote ([67108896 134217730 backspace] 0 "%d")) arg)))
 
 (fset 'forward-delete-sexp
       [?\C-  ?\C-\M-f backspace])
@@ -395,7 +432,6 @@ With argument, do this that many times."
 ;; Folding
 (yafolding-mode 1)
 (global-set-key (kbd "C-c f") 'yafolding-toggle-element)
-(global-set-key (kbd "C-c C-f") 'yafolding-toggle-element)
 
 ;; Stop annoying startup messages
 (setq inhibit-startup-message t) ; Emacs splash screen
@@ -405,15 +441,14 @@ With argument, do this that many times."
 
 (use-package merlin-mode
   :config
-  (setq merlin-use-auto-complete-mode t)
   (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
   (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-  (setq merlin-use-auto-complete-mode 'easy)
-  (setq merlin-ac-setup 'easy)
   (set-face-background 'merlin-type-face "#88FF44")
   :bind (:map merlin-mode-map
 			  ("C-c <up>" . merlin-type-enclosing-go-up)
-			   ("C-c <down>" . merlin-type-enclosing-go-down)))
+              ("C-c <down>" . merlin-type-enclosing-go-down)
+              ("C-c w t" . merlin-type-enclosing-copy)))
+
 (use-package ocp-indent)
 (use-package tuareg-mode
   :init
@@ -423,6 +458,8 @@ With argument, do this that many times."
 	  (var (car (read-from-string
 				 (shell-command-to-string "opam config env --sexp"))))
 	(setenv (car var) (cadr var)))
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'merlin-company-backend))
   (setq auto-mode-alist 
 		(append '(("\\.ml[ily]?$" . tuareg-mode))
 				auto-mode-alist))
@@ -517,6 +554,7 @@ With argument, do this that many times."
 	 (C . t)))
   (setq org-export-with-toc nil)
   (setq org-clock-persist 'history)
+  (setq org-src-preserve-indentation t)
   (org-clock-persistence-insinuate)
   (defalias 'org-insert-timestamp-inactive 'org-time-stamp-inactive)
   (defun insert-answers ()
@@ -535,6 +573,10 @@ With argument, do this that many times."
 			  ("C-c C-1" . org-time-stamp-inactive)
 			  ("C-c a t" . org-todo-list))
   :init (use-package htmlize))
+
+(use-package zpresent
+  :config
+  (add-hook 'zpresent-mode-hook (lambda () (linum-mode 0))))
 
 
 ;; Yes or no alias
@@ -558,7 +600,7 @@ With argument, do this that many times."
   (open-line 1)
   (next-line 1)
   (yank)
-  )
+  (pop kill-ring))
 (global-set-key (kbd "C-c d") 'duplicate-line)
 
 ;; Makes deleted files go to the trash
@@ -592,9 +634,10 @@ With argument, do this that many times."
   (setq ido-use-url-at-point nil)
   (setq ido-create-new-buffer 'always)
   (setq ido-file-extensions-order
-		'(".org" ".ml" ".rkt" ".py" "Makefile" ".java" ".txt" ".emacs" ".php" ".js" ".html" ".tex" ".scrbl"))
+		'(".org" ".ml" ".mli" ".rkt" ".py" "Makefile" ".java" ".txt" ".emacs" ".php" ".js" ".html" ".tex" ".scrbl"))
   (setq ido-create-new-buffer 'always
 		ido-use-filename-at-point nil)
+  (setq ffap-machine-p-known 'reject)
   (ido-mode 1)
   (setq ido-use-filename-at-point 'guess))
 
@@ -606,27 +649,19 @@ With argument, do this that many times."
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (let ((default-directory "~/.emacs.d/lisp"))
   (normal-top-level-add-subdirs-to-load-path))
-(defvar proof-site-location "~/.emacs.d/lisp/PG/generic/proof-site.elc")
-(if (file-exists-p proof-site-location)
-	(progn (load proof-site-location nil t)
-		   (require 'proof-site)
-		   (setq proof-splash-seen t)
-		   (setq proof-three-window-mode-policy 'hybrid)
-		   (setq proof-script-fly-past-comments t))
-  (message "Proof general not installed"))
+(load "~/.emacs.d/lisp/PG/generic/proof-site" nil t)
+(use-package proof-site
+  :config
+  (setq proof-splash-seen nil)
+  (setq proof-three-window-mode-policy 'hybrid)
+  (setq proof-script-fly-past-comments t))
 
 (use-package company-coq
   :config
   (add-hook 'coq-mode-hook #'company-coq-initialize))
 (add-hook 'coq-mode-hook (lambda ()
-							 (abbrev-mode -1)
-							 (flycheck-mode -1)))
-
-;; Jedi mode
-;; (use-package jedi
-;;   :config
-;;   (setq jedi:complete-on-dot t)
-;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
+                           (abbrev-mode -1)
+                           (flycheck-mode -1)))
 
 (defvar python-base-shebang "#!/usr/bin/env python")
 
@@ -665,14 +700,12 @@ STR String to be inserted"
   (interactive)
   (split-window-vertically)
   (other-window 1 nil)
-  (switch-to-next-buffer)
-  )
+  (switch-to-next-buffer))
 (defun hsplit-last-buffer ()
   (interactive)
    (split-window-horizontally)
   (other-window 1 nil)
-  (switch-to-next-buffer)
-  )
+  (switch-to-next-buffer))
 
 (global-set-key (kbd "C-x 2") 'vsplit-last-buffer)
 (global-set-key (kbd "C-x 3") 'hsplit-last-buffer)
@@ -715,7 +748,7 @@ STR String to be inserted"
 ;; Magit config
 (use-package magit
   :init (global-set-key (kbd "C-x g") 'magit-status)
-  :config (setq magit-push-current-set-remote-if-missing (quote default)))
+  :config (setq magit-push-current-set-remote-if-missing 'default))
 
 (use-package ibuffer
   :config
@@ -729,9 +762,9 @@ STR String to be inserted"
                             (name . "\*.tez")
                             (name . "\*.tz")))
            ("Coq" (mode . coq-mode))
-           ("Shell" (or (mode . shell)
+           ("Shell" (or (name . "\*.sh")
                         (name . "\*shell\*")
-                        (name . "\*.sh")))
+                        (mode . shell)))
            ("Dired" (mode . dired-mode))
            ("Magit" (name . "\*magit"))
            ("Man" (name . "\*man\*"))
@@ -747,7 +780,6 @@ STR String to be inserted"
 
 ;; Loads michelson mode
 (load "~/tezos/repo/emacs/michelson-mode.el" nil t)
-
 (defun set-alphanet (alphanet)
   (setq michelson-client-command
         (if alphanet
@@ -762,6 +794,8 @@ STR String to be inserted"
 
 (set-alphanet nil)
 
+(setq-default indent-tabs-mode nil)
+
 ;; Global modes
 (use-package diff-hl
   :config (global-diff-hl-mode t)
@@ -771,8 +805,11 @@ STR String to be inserted"
 (delete-selection-mode 1)
 (show-paren-mode 1)
 
-(use-package auto-complete
-  :config (global-auto-complete-mode t))
+(use-package company
+  :config (add-hook 'after-init-hook 'global-company-mode)
+  :bind
+  ("C-M-i" . company-complete))
+
 (use-package which-key
   :config (which-key-mode))
 (use-package color-theme
