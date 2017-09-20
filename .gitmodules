@@ -1,3 +1,0 @@
-[submodule "michelson-mode"]
-	path = michelson-mode
-	url = git@github.com:MiloDavis/michelson-mode.git
