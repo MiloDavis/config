@@ -13,7 +13,6 @@ export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
 alias mv="mv -i"
 alias cp="cp -i"
 alias ack="ack -i"              # Make ack case insensitive
-alias ctags='/usr/local/bin/ctags'
 
 # export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
 
@@ -21,9 +20,14 @@ GREEN="\[$(tput setaf 2)\]"
 RESET="\[$(tput sgr0)\]"
 export PS1="\n\[\e[34m\]\w\[\e[m\]\\n$ "
 
+# For laughs/times of extreme boredom
 alias star-wars="telnet towel.blinkenlights.nl"
 
-alias reload="source ~/.bash_profile"
+function reload() {
+    cwd=$(pwd)
+    source ~/.bash_profile
+    cd $cwd
+}
 
 function search () {
     find . -iname "*$1*";
@@ -40,11 +44,6 @@ alias lcase="tr '[A-Z]' '[a-z]'"
 switchd () { pushd; }
 alias sd="switchd"
 
-function lc-dir () {
-
-	find . -type f ! -executable | xargs -I{} wc -l {} | cut -d' ' -f1 | paste -sd+ | bc
-}
-
 # Emacsclient
 export EDITOR="emacsclient -a '' -c"
 alias emacs="emacsclient -c"
@@ -52,12 +51,13 @@ alias emacs="emacsclient -c"
 # Directories
 export HTDOCS="/Applications/XAMPP/htdocs/"
 export TYPED_RACKET="~/racket/fork/racket/share/pkgs/typed-racket-lib/"
+
 # GUI programs
 alias intellij="open /Applications/IntelliJ\ IDEA.app/"
 alias chrome="open /Applications/Google\ Chrome.app"
 alias activity="open /Applications/Utilities/Activity\ Monitor.app"
-# To exit screen C-\ C-d on punge
-# JS Type Analysis
+
+# Syntax highlighting utility (use with keynote)
 alias highlight="highlight -O rtf "
 
 function hash-wifi-password () {
@@ -78,24 +78,44 @@ if [[ "$OSTYPE" =~ "*darwin*" ]]; then
 fi
 
 if [[ "$OSTYPE" = *"darwin"* ]]; then
-	ssh-add ~/.ssh/ccis_github 2> /dev/null
-	ssh-add ~/.ssh/git-ec2 2> /dev/null
-	ssh-add ~/.ssh/github 2> /dev/null
-	ssh-add ~/.ssh/gitlab 2> /dev/null
+	ssh-add -K ~/.ssh/ccis_github 2> /dev/null
+	ssh-add -K ~/.ssh/git-ec2 2> /dev/null
+	ssh-add -K ~/.ssh/github 2> /dev/null
+	ssh-add -K ~/.ssh/gitlab 2> /dev/null
 fi
 
 # I somehow keep turning off my xmodmap configuration
 # I'm not sure how and haven't sat down to fix it yet
-# this function will let me temporarily fix things
+# this hack fixes the issues
 function CAPS () {
 	setxkbmap; sleep 2; xmodmap ~/.xmodmap;
 }
 
 alias start-tezos-node="source ~/notes/init-tezos.sh"
+function stop-tezos-nodes () {
+    pgrep tezos-node | xargs -r -I{} kill -9 {}
+}
 function alphanet () {
     ~/tezos/repo/scripts/alphanet.sh "$@"
 }
 
+# I like how more automatically scrolls in the emacs shell
+# TODO: figure out how to get less to do this
+export PAGER=more
+export MORE=-R
+export LESS=-R
+
+export TZPATH="/Users/milodavis/tezos/repo/"
+
+# This may brake things break outside of M-x shell
+# but that's my primary terminal, so whatever
+export TERM=xterm-256color
+
+# For easy parallel make
+MAKE_THREADS=4
+alias makep="make -j ${MAKE_THREADS}"
 
 # OPAM configuration
 . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+
+cd ~
