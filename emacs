@@ -218,6 +218,8 @@
 (global-set-key (kbd "C--") 'undo)
 
 ;; Shell keybinding and settings
+(add-to-list 'display-buffer-alist
+             '("*shell*" display-buffer-same-window))
 (global-set-key (kbd "C-;") 'shell)
 (add-hook 'shell-mode-hook (lambda ()
                              (setq comment-start "# ")

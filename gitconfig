@@ -13,6 +13,8 @@
 	helper = osxkeychain
 [push]
 	default = current
+[diff]
+    tool = opendiff
 [difftool]
 	prompt = false
 [filter "lfs"]
