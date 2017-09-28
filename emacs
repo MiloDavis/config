@@ -251,6 +251,9 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
 
+(use-package bash-completion
+  :config (bash-completion-setup))
+
 
 ;; Unsets frame suspension behavior in gui mode because I kept hitting it by accident
 (if (window-system )
@@ -288,7 +291,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("ba7917b02812fee8da4827fdf7867d3f6f282694f679b5d73f9965f45590843a" "c72a772c104710300103307264c00a04210c00f6cc419a79b8af7890478f380e" "f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
+    ("9a155066ec746201156bb39f7518c1828a73d67742e11271e4f24b7b178c4710" "ba7917b02812fee8da4827fdf7867d3f6f282694f679b5d73f9965f45590843a" "c72a772c104710300103307264c00a04210c00f6cc419a79b8af7890478f380e" "f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
  '(ecb-layout-name "left2")
@@ -308,7 +311,7 @@
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data ox-twbs org-pomodoro langtool yaml-mode o-blog htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-elisp-help org-edit-latex org-easy-img-insert org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-swift ob-sql-mode ob-prolog ob-php ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data ox-twbs org-pomodoro langtool yaml-mode o-blog htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-elisp-help org-edit-latex org-easy-img-insert org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-swift ob-sql-mode ob-prolog ob-php ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
  '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
  '(proof-shell-clear-goals-regexp
@@ -505,6 +508,11 @@ With argument, do this that many times."
 	  (if this-win-2nd (other-window 1))))
 	(message "toggle-window-split only works with exactly two buffers")))
 
+(defun hide-buffer ()
+  (interactive)
+  (bury-buffer)
+  (delete-window))
+
 ;; Sets buffer move and info
 (global-set-key (kbd "C-c b r") 'buf-move-right)
 (global-set-key (kbd "C-c b l") 'buf-move-left)
@@ -512,8 +520,7 @@ With argument, do this that many times."
 (global-set-key (kbd "C-c b d") 'buf-move-down)
 
 (global-set-key (kbd "C-c b p") 'show-file-name)
-(global-set-key (kbd "C-c b v") 'split-window-right)
-(global-set-key (kbd "C-c b h") 'split-window-below)
+(global-set-key (kbd "C-c b h") 'hide-buffer)
 (global-set-key (kbd "C-c b n") 'rename-buffer)
 (global-set-key (kbd "C-c b t") 'toggle-window-split)
 (global-set-key (kbd "C-c b b") 'bury-buffer)
@@ -649,7 +656,7 @@ With argument, do this that many times."
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (let ((default-directory "~/.emacs.d/lisp"))
   (normal-top-level-add-subdirs-to-load-path))
-(load "~/.emacs.d/lisp/PG/generic/proof-site" nil t)
+(load "~/.emacs.d/lisp/PG/generic/proof-site")
 (use-package proof-site
   :config
   (setq proof-splash-seen nil)
@@ -658,10 +665,10 @@ With argument, do this that many times."
 
 (use-package company-coq
   :config
-  (add-hook 'coq-mode-hook #'company-coq-initialize))
-(add-hook 'coq-mode-hook (lambda ()
-                           (abbrev-mode -1)
-                           (flycheck-mode -1)))
+  (add-hook 'coq-mode-hook #'company-coq-initialize)
+  (add-hook 'coq-mode-hook (lambda ()
+                             (abbrev-mode -1)
+                             (flycheck-mode -1))))
 
 (defvar python-base-shebang "#!/usr/bin/env python")
 
@@ -806,7 +813,8 @@ STR String to be inserted"
 (show-paren-mode 1)
 
 (use-package company
-  :config (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  (global-company-mode)
   :bind
   ("C-M-i" . company-complete))
 
