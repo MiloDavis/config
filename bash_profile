@@ -56,6 +56,7 @@ export TYPED_RACKET="~/racket/fork/racket/share/pkgs/typed-racket-lib/"
 alias intellij="open /Applications/IntelliJ\ IDEA.app/"
 alias chrome="open /Applications/Google\ Chrome.app"
 alias activity="open /Applications/Utilities/Activity\ Monitor.app"
+alias terminal="open /Applications/Utilities/Terminal.app"
 
 # Syntax highlighting utility (use with keynote)
 alias highlight="highlight -O rtf "
@@ -67,7 +68,7 @@ function hash-wifi-password () {
 
 
 if [[ "$OSTYPE" =~ "*darwin*" ]]; then
-
+    [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 	if ! pgrep -u $USER ssh-agent > /dev/null; then
 		ssh-agent > ~/.ssh-agent-thing
 	fi
