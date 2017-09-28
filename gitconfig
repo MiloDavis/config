@@ -23,9 +23,8 @@
 	required = true
 [alias]
 	aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /' | sort
-	ours   = "!f() { git checkout --ours $@ && git add $@; }; f"
-    theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
     throw-away = !git checkout -- .
 	upstream = "!f() { git branch --set-upstream-to=origin/$(git rev-parse --abbrev-ref HEAD); }; f"
+    git = !exec git             #Deals with git git
 [core]
 	excludesfile = /Users/milodavis/.gitignore_global
