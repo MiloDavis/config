@@ -65,6 +65,7 @@
 
 (require 'linum)
 (defun my/turn-off-linum-mode ()
+  "Turn off linum mode."
   (linum-mode -1))
 
 ;; Modes for file types
@@ -86,9 +87,10 @@
 
 (setq-default tab-width 4)
 
-;; Sets compile configuration
-(global-set-key (kbd "C-<tab> ") 'compile)
-(setq compilation-scroll-output t)
+(use-package compile
+  :config
+  (global-set-key (kbd "C-<tab> ") 'compile)
+  (setq compilation-scroll-output t))
 
 ;; Remove extra UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -170,6 +172,7 @@
 
 ;; Jump to character
 (defun jump-to-char-forward (arg char)
+  "Jump forward to the `ARG'th instance of `CHAR'."
   (interactive "p\ncJump to char (forward): ")
   (progn
 	(forward-char 1)
@@ -177,6 +180,7 @@
 	(point)))
 
 (defun jump-to-char-backward (arg char)
+  "Jump backward to the `ARG'th instance of `CHAR'."
   (interactive "p\ncJump to char (backwards): ")
   (progn
 	(backward-char 1)
@@ -186,7 +190,7 @@
 
 ;; Moves to first non-whitespace character, then character 0
 (defadvice move-beginning-of-line (around smarter-bol activate)
-  ;; Move to requested line if needed.
+  "Move to requested line if needed."
   (let ((arg (or (ad-get-arg 0) 1)))
     (when (/= arg 1)
       (forward-line (1- arg))))
@@ -311,7 +315,7 @@
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data ox-twbs org-pomodoro langtool yaml-mode o-blog htmlize buffer-move projectile tuareg json json-snatcher web-mode forth-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-elisp-help org-edit-latex org-easy-img-insert org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-swift ob-sql-mode ob-prolog ob-php ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode ido-vertical-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine framemove flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (wgrep wgrep-ack wgrep-ag counsel-ebdb counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data ox-twbs org-pomodoro langtool yaml-mode o-blog htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-elisp-help org-edit-latex org-easy-img-insert org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-swift ob-sql-mode ob-prolog ob-php ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
  '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
  '(proof-shell-clear-goals-regexp
@@ -338,7 +342,7 @@
  '(proof-shell-start-goals-regexp "[0-9]+\\(?: focused\\)? subgoals?")
  '(proof-shell-start-silent-cmd "Set Silent. ")
  '(proof-shell-stop-silent-cmd "Unset Silent. ")
- '(python-shell-interpreter "ipython")
+ '(python-shell-interpreter "ipython" t)
 '(selected-packages
 (quote
  (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
@@ -385,22 +389,23 @@
 ;; Sets path variable
 (exec-path-from-shell-initialize)
 (add-to-list 'exec-path-from-shell-variables "TEXINPUTS")
-(exec-path-from-shell-initialize )
+(exec-path-from-shell-initialize)
 
 
 ;; Macros:
 (fset 'clear-repl
       (lambda (&optional arg)
 		"Remove all data from the repl." 
-		(interactive "p") 
-		(kmacro-exec-ring-item 
-		 (quote ([134217790 1 67108896 5 backspace 16 16 67108896 134217788 backspace 14 backspace 134217848 
-							100 105 115 M-backspace 98 117 102 102 101 114 32 100 105 115 97 98 108 101 32 
-							117 110 100 111 return 134217848 98 117 102 102 101 114 32 101 110 97 98 108 101 
+		(interactive "p")
+		(kmacro-exec-ring-item
+		 (quote ([134217790 1 67108896 5 backspace 16 16 67108896 134217788 backspace 14 backspace 134217848
+							100 105 115 M-backspace 98 117 102 102 101 114 32 100 105 115 97 98 108 101 32
+							117 110 100 111 return 134217848 98 117 102 102 101 114 32 101 110 97 98 108 101
 							32 117 110 100 111 return 134217790 32] 0 "%d")) arg)))
 
 
-(global-set-key (kbd "C-c b a") 'clear-repl)
+(add-hook 'shell-mode-hook
+          (lambda () (local-set-key (kbd "C-c b a") 'clear-repl)))
 
 (fset 'backward-delete-sexp
       (lambda (&optional arg)
@@ -440,17 +445,17 @@ With argument, do this that many times."
 (setq inhibit-startup-message t) ; Emacs splash screen
 
 ;; ocaml
-(load-file "~/.opam/tezos/share/emacs/site-lisp/merlin.el")
+(load "~/libraries/merlin/emacs/merlin")
 
 (use-package merlin-mode
   :config
+  (setq merlin-command "~/libraries/merlin/ocamlmerlin")
   (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
   (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
   (set-face-background 'merlin-type-face "#88FF44")
   :bind (:map merlin-mode-map
 			  ("C-c <up>" . merlin-type-enclosing-go-up)
-              ("C-c <down>" . merlin-type-enclosing-go-down)
-              ("C-c w t" . merlin-type-enclosing-copy)))
+              ("C-c <down>" . merlin-type-enclosing-go-down)))
 
 (use-package ocp-indent)
 (use-package tuareg-mode
@@ -608,23 +613,27 @@ With argument, do this that many times."
   (next-line 1)
   (yank)
   (pop kill-ring))
+
 (global-set-key (kbd "C-c d") 'duplicate-line)
 
 ;; Makes deleted files go to the trash
 (setq delete-by-moving-to-trash t)
 
 ;; Dired settings
-(add-hook 'dired-load-hook
-          (lambda ()
-            (load "dired-x")))
-(setq dired-recursive-deletes 'always)
-(setq dired-recursive-copies 'always)
-(add-hook 'dired-mode-hook
- (lambda ()
-  (define-key dired-mode-map (kbd "^")
-    (lambda () (interactive) (find-alternate-file "..")))))
-(put 'dired-find-alternate-file 'disabled nil)
-(global-set-key (kbd "C-x C-d") 'ido-dired)
+(use-package dired
+  :config
+  (global-set-key (kbd "C-x d") 'dired)
+  (global-set-key (kbd "C-x C-d") 'dired)
+  (add-hook 'dired-load-hook
+            (lambda ()
+              (load "dired-x")))
+  (setq dired-recursive-deletes 'always)
+  (setq dired-recursive-copies 'always)
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (define-key dired-mode-map (kbd "^")
+                (lambda () (interactive) (find-alternate-file "..")))))
+  (put 'dired-find-alternate-file 'disabled nil))
 
 ;; Adds a newline at the end of every file
 (setq require-final-newline t)
@@ -632,22 +641,42 @@ With argument, do this that many times."
 ;; Removes duplicates from history
 (setq history-delete-duplicates t)
 
-;; Ido settings
-(use-package ido
+;; Ivy settings
+(use-package ivy
   :config
-  (setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)
-  (setq ido-use-filename-at-point 'guess)
-  (setq ido-use-url-at-point nil)
-  (setq ido-create-new-buffer 'always)
-  (setq ido-file-extensions-order
-		'(".org" ".ml" ".mli" ".rkt" ".py" "Makefile" ".java" ".txt" ".emacs" ".php" ".js" ".html" ".tex" ".scrbl"))
-  (setq ido-create-new-buffer 'always
-		ido-use-filename-at-point nil)
-  (setq ffap-machine-p-known 'reject)
-  (ido-mode 1)
-  (setq ido-use-filename-at-point 'guess))
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-height 10)
+  (setq ivy-count-format "")
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-ignore-order))))
 
+(use-package swiper
+  :init
+  (global-set-key (kbd "C-s") 'swiper)
+  (global-set-key (kbd "C-r") 'swiper)
+  :bind (:map swiper-map
+              ("C-r" . ivy-previous-line)))
+
+(defmacro silent (s)
+  "Inhibit messages that occur within `S'."
+  `(let ((inhibit-message t))
+     ,s))
+
+(use-package counsel
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-count-format "%d/%d ")
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "C-c s") 'counsel-ag)
+  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+  (silent (counsel-projectile-on)))
+
+(setq-default show-trailing-whitespace t)
 
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
 
@@ -656,7 +685,7 @@ With argument, do this that many times."
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (let ((default-directory "~/.emacs.d/lisp"))
   (normal-top-level-add-subdirs-to-load-path))
-(load "~/.emacs.d/lisp/PG/generic/proof-site")
+(load "~/.emacs.d/lisp/PG/generic/proof-site" nil t)
 (use-package proof-site
   :config
   (setq proof-splash-seen nil)
@@ -720,7 +749,9 @@ STR String to be inserted"
 
 
 ;; Tramp mode
-(setq tramp-default-method "ssh")
+(use-package tramp
+  :config
+  (setq tramp-default-method "ssh"))
 
 (setq ring-bell-function 'ignore)
 
@@ -745,7 +776,7 @@ STR String to be inserted"
 
 ;; Sets multiple buffer names to prefix with path
 (use-package uniquify
-  :config 
+  :config
   (setq uniquify-buffer-name-style 'forward))
 
 ;; Saves things from clipboard if emacs text is
@@ -820,6 +851,7 @@ STR String to be inserted"
 
 (use-package which-key
   :config (which-key-mode))
+
 (use-package color-theme
   :config (if (window-system)
 			  (load-theme 'leuven)
