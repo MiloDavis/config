@@ -26,5 +26,6 @@
     throw-away = !git checkout -- .
 	upstream = "!f() { git branch --set-upstream-to=origin/$(git rev-parse --abbrev-ref HEAD); }; f"
     git = !exec git             #Deals with git git
+    not-current = !git log --branches --not --remotes --simplify-by-decoration --decorate --oneline
 [core]
 	excludesfile = /Users/milodavis/.gitignore_global
