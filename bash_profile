@@ -30,7 +30,9 @@ function reload() {
 }
 
 function search () {
-    find . -iname "*$1*";
+    search_str="*$1*"
+    shift
+    find . -iname "$search_str" "$@";
 }
 
 function wstrip () {
