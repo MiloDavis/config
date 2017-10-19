@@ -16,30 +16,28 @@
 (setq max-lisp-eval-depth (* 800 30))
 
 ;; Packages
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  (setq package-archive-priorities
+(require 'package)
+(package-initialize)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(setq package-archive-priorities
       '(("melpa-stable" . 20)
         ("marmalade" . 20)
         ("gnu" . 10)
         ("melpa" . 0)))
-  (unless (package-installed-p 'use-package)
-	(package-refresh-contents)
-	(package-install 'use-package))
-  (eval-when-compile
-    (require 'use-package))
-  (setq use-package-always-ensure t)
-  (setq use-package-ensure-function
-		(lambda (package-name ensure-val state ctx)
-		  (package-installed-p package-name)))
-  (use-package diminish)
-  (use-package bind-key)
-  (global-set-key (kbd "C-c P") 'package-list-packages)
-  )
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(setq use-package-always-ensure t)
+(setq use-package-ensure-function
+      (lambda (package-name ensure-val state ctx)
+        (package-installed-p package-name)))
+(use-package diminish)
+(use-package bind-key)
+(global-set-key (kbd "C-c P") 'package-list-packages)
+(eval-when-compile
+  (require 'use-package))
 
 (setq vc-follow-symlinks t)
 
@@ -188,9 +186,8 @@
 	(point)))
 
 
-;; Moves to first non-whitespace character, then character 0
 (defadvice move-beginning-of-line (around smarter-bol activate)
-  "Move to requested line if needed."
+  "Move to first non-whitespace character in line."
   (let ((arg (or (ad-get-arg 0) 1)))
     (when (/= arg 1)
       (forward-line (1- arg))))
@@ -229,31 +226,35 @@
 (global-set-key (kbd "C--") 'undo)
 
 ;; Shell keybinding and settings
-(add-to-list 'display-buffer-alist
-             '("*shell*" display-buffer-same-window))
-(global-set-key (kbd "C-;") 'shell)
-(add-hook 'shell-mode-hook (lambda ()
-                             (setq comment-start "# ")
-                             (setq comment-end "")))
-(setq comint-input-ignoredups t)
-;; (comint-process-echoes 't)
-;; This code allows programs to keep their formatting when shell frame size changes
-(defun comint-fix-window-size ()
-  "Change process window size."
-  (when (derived-mode-p 'comint-mode)
-    (let ((process (get-buffer-process (current-buffer))))
-      (unless (eq nil process)
-        (set-process-window-size process (window-height) (window-width))))))
-
-(defun my-shell-mode-hook ()
-  "Add this hook as buffer local, so it will run once per window."
-  (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t))
-
-(add-hook 'shell-mode-hook 'my-shell-mode-hook)
-(add-hook 'shell-mode-hook 'dirtrack-mode)
-(add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+(use-package shell
+  :config
+  (defconst shell-buffer-name "*shell*")
+  (add-to-list 'display-buffer-alist
+               `(,shell-buffer-name display-buffer-same-window))
+  (global-set-key (kbd "C-;") 'shell)
+  (add-hook 'shell-mode-hook (lambda ()
+                               (setq comment-start "# ")
+                               (setq comment-end "")))
+  (setq comint-input-ignoredups t)
+  ;; (comint-process-echoes 't)
+  ;; This code allows programs to keep their formatting when shell frame size changes
+  (defun comint-fix-window-size ()
+    "Change process window size."
+    (when (derived-mode-p 'comint-mode)
+      (let ((process (get-buffer-process (current-buffer))))
+        (unless (eq nil process)
+          (set-process-window-size process (window-height) (window-width))))))
+  (defun my-shell-mode-hook ()
+    "Add this hook as buffer local, so it will run once per window."
+    (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t))
+  (add-hook 'shell-mode-hook 'my-shell-mode-hook)
+  (add-hook 'shell-mode-hook 'dirtrack-mode)
+  (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+  (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c b a") 'clear-repl))))
 
 (use-package bash-completion
   :config (bash-completion-setup))
@@ -298,6 +299,7 @@
     ("9a155066ec746201156bb39f7518c1828a73d67742e11271e4f24b7b178c4710" "ba7917b02812fee8da4827fdf7867d3f6f282694f679b5d73f9965f45590843a" "c72a772c104710300103307264c00a04210c00f6cc419a79b8af7890478f380e" "f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
  '(debug-on-error nil)
  '(default-input-method "TeX")
+ '(dumb-jump-mode t)
  '(ecb-layout-name "left2")
  '(ecb-layout-window-sizes
    (quote
@@ -310,12 +312,11 @@
    (quote
     ("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc" "*.native" "*.byte")))
  '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
- '(org-directory "~/notes")
  '(org-src-tab-acts-natively t)
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (wgrep wgrep-ack wgrep-ag counsel-ebdb counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data ox-twbs org-pomodoro langtool yaml-mode o-blog htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud ox-gfm org-elisp-help org-edit-latex org-easy-img-insert org-clock-today org-clock-convenience org-babel-eval-in-repl org-ac ocp-indent ob-swift ob-sql-mode ob-prolog ob-php ob-ipython ob-http ob-async nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (ox-gfm ox-twbs dumb-jump ocp-indent ob-prolog ob-translate ob-async solidity-mode wgrep wgrep-ack wgrep-ag counsel-ebdb counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data langtool yaml-mode htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
  '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
  '(proof-shell-clear-goals-regexp
@@ -342,7 +343,7 @@
  '(proof-shell-start-goals-regexp "[0-9]+\\(?: focused\\)? subgoals?")
  '(proof-shell-start-silent-cmd "Set Silent. ")
  '(proof-shell-stop-silent-cmd "Unset Silent. ")
- '(python-shell-interpreter "ipython" t)
+ '(python-shell-interpreter "ipython")
 '(selected-packages
 (quote
  (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
@@ -360,7 +361,13 @@
 (put 'downcase-region 'disabled nil)
 
 (use-package projectile
-  :init (projectile-global-mode))
+  :init (projectile-global-mode)
+  :config
+  ;; Fixes performance problem
+  ;; From https://github.com/bbatsov/projectile/issues/1183
+  (setq projectile-mode-line
+        '(:eval (format " Projectile[%s]"
+                        (projectile-project-name)))))
 
 
 ;; VLF mode
@@ -403,9 +410,6 @@
 							117 110 100 111 return 134217848 98 117 102 102 101 114 32 101 110 97 98 108 101
 							32 117 110 100 111 return 134217790 32] 0 "%d")) arg)))
 
-
-(add-hook 'shell-mode-hook
-          (lambda () (local-set-key (kbd "C-c b a") 'clear-repl)))
 
 (fset 'backward-delete-sexp
       (lambda (&optional arg)
@@ -474,6 +478,7 @@ With argument, do this that many times."
   (setq auto-mode-alist 
       (append '(("\\.ml[ily]?$" . tuareg-mode))
 			  auto-mode-alist))
+  (add-to-list 'auto-mode-alist '("jbuild$" . lisp-mode))
   :bind (:map tuareg-mode-map
 			  ("M-C-." . completion-at-point)))
 (use-package utop
@@ -535,7 +540,6 @@ With argument, do this that many times."
 				  (kill-new (buffer-file-name))
 				  (message (concat "Copied path " (buffer-file-name ) " to kill ring"))))
 
-;; Org mode
 (use-package org
   :ensure nil
   :config
@@ -672,7 +676,7 @@ With argument, do this that many times."
   (global-set-key (kbd "C-c C-r") 'ivy-resume)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "C-c s") 'counsel-ag)
+  (global-set-key (kbd "C-c s") 'counsel-projectile-ag)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
   (silent (counsel-projectile-on)))
 
@@ -857,7 +861,9 @@ STR String to be inserted"
 			  (load-theme 'leuven)
 			nil))
 
-(column-number-mode)
+;; Improves display of long lines
+(setq-default bidi-display-reordering nil)
+
 (use-package flycheck
   :config (add-hook 'after-init-hook #'global-flycheck-mode))
 (put 'dired-find-alternate-file 'disabled nil)
@@ -865,3 +871,4 @@ STR String to be inserted"
 
 (provide 'emacs)
 ;;; emacs ends here
+(put 'erase-buffer 'disabled nil)
