@@ -116,7 +116,9 @@
 
 ;; Scroll by one
 (global-set-key (kbd "<M-up>") (lambda () (interactive) (scroll-down-command 1)))
+(global-set-key (kbd "<M-S-up>") (lambda () (interactive) (scroll-down-command 5)))
 (global-set-key (kbd "<M-down>") (lambda () (interactive) (scroll-up-command 1)))
+(global-set-key (kbd "<M-S-down>") (lambda () (interactive) (scroll-up-command 5)))
 
 ;; Set open .emacs key binding
 (global-set-key (kbd "C-c c e") (open-file-binding "~/.emacs"))
