@@ -4,11 +4,13 @@ export HISTCONTROL=erasedups
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
 export PATH=/Users/milodavis/racket/fork/racket/bin/:$PATH
+export PATH=/usr/local/lib/python2.7/site-packages:$PATH
 export PATH=/Users/milodavis/.opam/system/bin/:$PATH
 export PATH=/usr/texbin:$PATH
 export PATH=/usr/local/texlive/2015/texmf-dist/fonts/tfm:$PATH
 export LANG=en_US.UTF-8
 export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/config/github_api_token)
+export HOMEBREW_NO_AUTO_UPDATE=1
 export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
 alias mv="mv -i"
 alias cp="cp -i"
@@ -32,11 +34,11 @@ function reload() {
 function search () {
     search_str="*$1*"
     shift
-    find . -iname "$search_str" "$@";
+    find . -iname "$search_str" "$@" | grep -v '\.git';
 }
 
 function wstrip () {
-	cat ${1-/dev/stdin} | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//';
+    cat ${1-/dev/stdin} | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//';
 }
 function every () { while True; do $*; sleep 1; done; }
 function every-nth () { interval=$1; shift; while True; do $*; sleep $interval; echo; done; }
@@ -64,40 +66,42 @@ alias terminal="open /Applications/Utilities/Terminal.app"
 alias highlight="highlight -O rtf "
 
 function hash-wifi-password () {
-	echo -n $1 | iconv -t utf16le | openssl md4;
-	history -d $((HISTCMD-1));
+    echo -n $1 | iconv -t utf16le | openssl md4;
+    history -d $((HISTCMD-1));
 }
 
 
 if [[ "$OSTYPE" =~ "*darwin*" ]]; then
     [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
-	if ! pgrep -u $USER ssh-agent > /dev/null; then
-		ssh-agent > ~/.ssh-agent-thing
-	fi
+    if ! pgrep -u $USER ssh-agent > /dev/null; then
+        ssh-agent > ~/.ssh-agent-thing
+    fi
 
-	if [[ "$SSH_AGENT_PID" == "" ]]; then
-		eval $(<~/.ssh-agent-thing);
-	fi
+    if [[ "$SSH_AGENT_PID" == "" ]]; then
+        eval $(<~/.ssh-agent-thing);
+    fi
 fi
 
 if [[ "$OSTYPE" = *"darwin"* ]]; then
-	ssh-add -K ~/.ssh/ccis_github 2> /dev/null
-	ssh-add -K ~/.ssh/git-ec2 2> /dev/null
-	ssh-add -K ~/.ssh/github 2> /dev/null
-	ssh-add -K ~/.ssh/gitlab 2> /dev/null
+    ssh-add -K ~/.ssh/ccis_github 2> /dev/null
+    ssh-add -K ~/.ssh/git-ec2 2> /dev/null
+    ssh-add -K ~/.ssh/github 2> /dev/null
+    ssh-add -K ~/.ssh/gitlab 2> /dev/null
 fi
 
 # I somehow keep turning off my xmodmap configuration
 # I'm not sure how and haven't sat down to fix it yet
 # this hack fixes the issues
 function CAPS () {
-	setxkbmap; sleep 2; xmodmap ~/.xmodmap;
+    setxkbmap; sleep 2; xmodmap ~/.xmodmap;
 }
 
 alias start-tezos-node="source ~/notes/init-tezos.sh"
 function stop-tezos-nodes () {
-    pgrep tezos-node | xargs -r -I{} kill -9 {}
+    pgrep -f tezos-node | xargs -r kill -9;
+    pgrep -f launch-sandbox-nodes | xargs -r kill -9
 }
+
 function alphanet () {
     ~/tezos/repo/scripts/alphanet.sh "$@"
 }
