@@ -122,6 +122,9 @@ export TERM=xterm-256color
 MAKE_THREADS=4
 alias makep="make -j ${MAKE_THREADS}"
 
+# Prints jbuilder tests in tezos live
+export DEV=" --dev --no-buffer"
+
 # OPAM configuration
 . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
