@@ -177,9 +177,11 @@
 	("8sqsubseteq" "⊑")
 	("8nobreak" "﻿")
     ("8tez" "ꜩ")
+    ("8implies" "⇒")
 	))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
+(diminish 'abbrev-mode)
 
 
 ;; Sets navigation Key bindings
