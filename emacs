@@ -733,7 +733,13 @@ STR String to be inserted"
 (setq ring-bell-function 'ignore)
 
 (defalias 'sir 'string-insert-rectangle)
-(global-set-key (kbd "C-c R") 'string-insert-rectangle)
+(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
+(global-set-key (kbd "C-x r I") 'insert-register)
+
+(setq x-stretch-cursor t)
+(use-package multiple-cursors
+  :config
+  (global-set-key (kbd "C-c M") 'mc/edit-lines))
 
 ;; Markdown
 (add-hook 'markdown-mode 'markdown-preview-mode)
