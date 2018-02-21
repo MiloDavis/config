@@ -285,6 +285,13 @@
   (add-hook 'shell-mode-hook (lambda ()
                                (setq comment-start "# ")
                                (setq comment-end "")))
+  (defun clear-repl ()
+    (interactive)
+    (erase-buffer)
+    (comint-send-input)
+    (whitespace-cleanup)
+    (setq buffer-undo-list nil)
+    (whitespace-cleanup))
   (setq comint-input-ignoredups t)
   ;; (comint-process-echoes 't)
   ;; This code allows programs to keep their formatting when shell frame size changes
@@ -302,16 +309,15 @@
   (add-hook 'shell-mode-hook 'my/turn-off-linum-mode)
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
   (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
-  (add-hook 'shell-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c b a") 'clear-repl))))
+  :bind (:map shell-mode-map
+              ("C-c b a" . clear-repl)))
 
 (use-package bash-completion
   :config (bash-completion-setup))
 
 
 ;; Unsets frame suspension behavior in gui mode because I kept hitting it by accident
-(if (window-system )
+(if (window-system)
     (global-unset-key (kbd "C-z"))
   nil)
 
@@ -385,28 +391,6 @@
 (exec-path-from-shell-initialize)
 (add-to-list 'exec-path-from-shell-variables "TEXINPUTS")
 (exec-path-from-shell-initialize)
-
-
-;; Macros:
-(fset 'clear-repl
-      (lambda (&optional arg)
-		"Remove all data from the repl." 
-		(interactive "p")
-		(kmacro-exec-ring-item
-		 (quote ([134217790 1 67108896 5 backspace 16 16 67108896 134217788 backspace 14 backspace 134217848
-							100 105 115 M-backspace 98 117 102 102 101 114 32 100 105 115 97 98 108 101 32
-							117 110 100 111 return 134217848 98 117 102 102 101 114 32 101 110 97 98 108 101
-							32 117 110 100 111 return 134217790 32] 0 "%d")) arg)))
-
-
-(fset 'backward-delete-sexp
-      (lambda (&optional arg)
-        "Keyboard macro."
-        (interactive "p")
-        (kmacro-exec-ring-item (quote ([67108896 134217730 backspace] 0 "%d")) arg)))
-
-(fset 'forward-delete-sexp
-      [?\C-  ?\C-\M-f backspace])
 
 (global-set-key (kbd "<C-M-backspace>") 'backward-delete-sexp)
 (global-set-key (kbd "C-M-d") 'forward-delete-sexp) ; For some reason this doesn't work unless the shift key is held
