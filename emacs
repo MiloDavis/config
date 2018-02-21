@@ -605,8 +605,77 @@ With argument, do this that many times."
 ;; Removes duplicates from history
 (setq history-delete-duplicates t)
 
+;; Remove when bug is fixed
+(defun swiper--add-overlays (re &optional beg end wnd)
+  "Add overlays for RE regexp in visible part of the current buffer.
+BEG and END, when specified, are the point bounds.
+WND, when specified is the window."
+  (setq wnd (or wnd (ivy-state-window ivy-last)))
+  (let ((ov (if visual-line-mode
+                (make-overlay
+                 (save-excursion
+                   (beginning-of-visual-line)
+                   (point))
+                 (save-excursion
+                   (end-of-visual-line)
+                   (point)))
+              (make-overlay
+               (line-beginning-position)
+               (1+ (line-end-position))))))
+    (overlay-put ov 'face 'swiper-line-face)
+    (overlay-put ov 'window wnd)
+    (push ov swiper--overlays)
+    (let* ((wh (window-height))
+           (beg (or beg (save-excursion
+                          (forward-line (- wh))
+                          (point))))
+           (end (or end (save-excursion
+                          (forward-line wh)
+                          (point))))
+           (case-fold-search (ivy--case-fold-p re)))
+      (when (>= (length re) swiper-min-highlight)
+        (save-excursion
+          (goto-char beg)
+          ;; RE can become an invalid regexp
+          (while (and (ignore-errors (re-search-forward re end t))
+                      (> (- (match-end 0) (match-beginning 0)) 0))
+            (unless (and (consp ivy--old-re)
+                         (null
+                          (save-match-data
+                            (ivy--re-filter ivy--old-re
+                                            (list
+                                             (buffer-substring-no-properties
+                                              (line-beginning-position)
+                                              (line-end-position)))))))
+              (let ((mb (match-beginning 0))
+                    (me (match-end 0)))
+                (unless (> (- me mb) 2017)
+                  (swiper--add-overlay mb me
+                                       (if (zerop ivy--subexps)
+                                           (cadr swiper-faces)
+                                         (car swiper-faces))
+                                       wnd 0))))
+            (let ((i 1)
+                  (j 0))
+              (while (<= (cl-incf j) ivy--subexps)
+                (let ((bm (match-beginning j))
+                      (em (match-end j)))
+                  (when (and (integerp em)
+                             (integerp bm))
+                    (while (and (< j ivy--subexps)
+                                (integerp (match-beginning (+ j 1)))
+                                (= em (match-beginning (+ j 1))))
+                      (setq em (match-end (cl-incf j))))
+                    (swiper--add-overlay
+                     bm em
+                     (nth (1+ (mod (+ i 2) (1- (length swiper-faces))))
+                          swiper-faces)
+                     wnd i)
+                    (cl-incf i)))))))))))
+
 ;; Ivy settings
 (use-package ivy
+  :diminish ivy-mode
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
