@@ -799,7 +799,12 @@ STR String to be inserted"
 
 (setq-default indent-tabs-mode nil)
 
-;; Global modes
+(use-package bm
+  :bind
+  (("C-M-m" . bm-toggle)
+   ("M-m" . bm-next)
+   ("M-M" . bm-previous)))
+
 (use-package diff-hl
   :config (global-diff-hl-mode t)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
