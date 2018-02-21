@@ -760,10 +760,78 @@ STR String to be inserted"
 ;; killed before the clipboard text was yanked
 (setq save-interprogram-paste-before-kill t)
 
-;; Magit config
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+(use-package mu4e
+  :config
+  (setq mu4e-maildir "~/.Mail")
+  (setq mu4e-drafts-folder "/superlizard.mo@gmail.com/[Gmail].Drafts")
+  (setq mu4e-sent-folder   "/superlizard.mo@gmail.com/[Gmail].Sent Mail")
+  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+  (setq mu4e-sent-messages-behavior 'delete)
+  ;; allow for updating mail using 'U' in the main view:
+  (setq mu4e-get-mail-command "offlineimap")
+
+  ;; shortcuts
+  (setq mu4e-maildir-shortcuts
+        '( ("//superlizard.mo@gmail.com/INBOX"              . ?i)
+           ("/superlizard.mo@gmail.com/[Gmail].Sent Mail"   . ?s)))
+
+  ;; something about ourselves
+  (setq
+   user-mail-address "superlizard.mo@gmail.com"
+   user-full-name  "Milo Davis"
+   mu4e-compose-signature
+   (concat
+    "--\n"
+    "Milo\n"))
+
+  ;; show images
+  (setq mu4e-show-images t)
+
+  ;; use imagemagick, if available
+  (when (fboundp 'imagemagick-register-types)
+    (imagemagick-register-types))
+
+  ;; convert html emails properly
+  ;; Possible options:
+  ;;   - html2text -utf8 -width 72
+  ;;   - textutil -stdin -format html -convert txt -stdout
+  ;;   - html2markdown | grep -v '&nbsp_place_holder;' (Requires html2text pypi)
+  ;;   - w3m -dump -cols 80 -T text/html
+  ;;   - view in browser (provided below)
+  (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
+
+  ;; spell check
+  (add-hook 'mu4e-compose-mode-hook
+            (defun my-do-compose-stuff ()
+              "My settings for message composition."
+              (set-fill-column 72)
+              (flyspell-mode)))
+
+  ;; add option to view html message in a browser
+  ;; `aV` in view to activate
+  (add-to-list 'mu4e-view-actions
+               '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+  ;; fetch mail every 10 mins
+  (setq mu4e-update-interval 600)
+  (setq message-send-mail-function 'smtpmail-send-it
+     smtpmail-stream-type 'starttls
+     smtpmail-default-smtp-server "smtp.gmail.com"
+     smtpmail-smtp-server "smtp.gmail.com"
+     smtpmail-smtp-service 587))
+
+;; Git related configuration
 (use-package magit
-  :init (global-set-key (kbd "C-x g") 'magit-status)
-  :config (setq magit-push-current-set-remote-if-missing 'default))
+  :config (setq magit-push-current-set-remote-if-missing 'default)
+  :bind (("C-c g m" . magit-status)))
+
+(use-package git-timemachine
+  :config
+  :bind (("C-c g t" . git-timemachine)))
+
+
 
 (use-package ibuffer
   :config
