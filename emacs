@@ -787,7 +787,7 @@ STR String to be inserted"
   (setq michelson-client-command
         (if alphanet
             "~/tezos/repo/scripts/alphanet.sh client"
-          "~/tezos/repo/tezos-client"))
+          "~/tezos/repo/tezos-client -port 18739"))
   (setq michelson-alphanet alphanet))
 
 (defun toggle-alphanet (&optional alphanet)
