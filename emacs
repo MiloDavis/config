@@ -969,8 +969,8 @@ STR String to be inserted"
 
 (use-package color-theme
   :config (if (window-system)
-			  (load-theme 'leuven)
-			nil))
+              (load-theme 'leuven)
+            nil))
 
 ;; Improves display of long lines
 (setq-default bidi-display-reordering nil)
