@@ -88,7 +88,26 @@
 (use-package compile
   :config
   (global-set-key (kbd "C-<tab> ") 'compile)
-  (setq compilation-scroll-output t))
+  (setq compilation-scroll-output t)
+  (defvar hide-compilation-success t)
+
+  (defun toggle-hide-compilation-success ()
+    (interactive)
+    (setq toggle-hide-compilation-success (not toggle-hide-compilation-success)))
+
+  ;; modified from enberg on #emacs via https://emacs.stackexchange.com/a/336/16707
+  (setq compilation-finish-function
+        (lambda (buf str)
+          (if (and hide-compilation-success (null (string-match ".*exited abnormally.*" str)))
+              ;;no errors, make the compilation window go away in a few seconds
+              (progn
+                (run-at-time
+                 ".5 sec" nil
+                 (lambda ()
+                   (let ((compilation-buffer (get-buffer-create "*compilation*")))
+                     (if (not (equal (current-buffer) compilation-buffer))
+                         (delete-windows-on compilation-buffer)))))
+                (message "Compilation succeeded!"))))))
 
 ;; Remove extra UI elements
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
