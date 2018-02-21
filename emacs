@@ -418,30 +418,42 @@ With argument, do this that many times."
   (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
   (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
   (set-face-background 'merlin-type-face "#88FF44")
+  (defun infer-file-mli ()
+    (interactive)
+    (end-of-buffer)
+    (open-line 1)
+    (insert "end")
+    (goto-char 0)
+    (open-line 1)
+    (insert "module Infer_mli = struct")
+    (goto-char 9)
+    (merlin-type-enclosing))
   :bind (:map merlin-mode-map
-			  ("C-c <up>" . merlin-type-enclosing-go-up)
-              ("C-c <down>" . merlin-type-enclosing-go-down)))
+              ("C-c <up>" . merlin-type-enclosing-go-up)
+              ("C-c <down>" . merlin-type-enclosing-go-down)
+              ("C-c C-o" . merlin-occurrences)))
 
 (use-package ocp-indent)
+(load "~/libraries/tuareg/tuareg-site-file")
 (use-package tuareg-mode
   :init
   (add-hook 'tuareg-mode-hook 'merlin-mode)
   :config
   (dolist
-	  (var (car (read-from-string
-				 (shell-command-to-string "opam config env --sexp"))))
-	(setenv (car var) (cadr var)))
+      (var (car (read-from-string
+                 (shell-command-to-string "opam config env --sexp"))))
+    (setenv (car var) (cadr var)))
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'merlin-company-backend))
   (setq auto-mode-alist 
-		(append '(("\\.ml[ily]?$" . tuareg-mode))
-				auto-mode-alist))
+        (append '(("\\.ml[ily]?$" . tuareg-mode))
+                auto-mode-alist))
   (setq auto-mode-alist 
       (append '(("\\.ml[ily]?$" . tuareg-mode))
-			  auto-mode-alist))
-  (add-to-list 'auto-mode-alist '("jbuild$" . lisp-mode))
+              auto-mode-alist))
   :bind (:map tuareg-mode-map
-			  ("M-C-." . completion-at-point)))
+              ("M-C-." . completion-at-point)))
+
 (use-package utop
   :config (setq utop-command "opam config exec -- utop -emacs"))
 
