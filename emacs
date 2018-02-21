@@ -380,7 +380,9 @@
 
 ;; Kill ring settings
 (setq kill-ring-max 100000)
+(setq kill-do-not-save-duplicates t)
 (global-set-key (kbd "M-Y") (lambda () (interactive) (yank-pop -1)))
+(global-set-key (kbd "C-M-y") 'counsel-yank-pop)
 (defun clear-kill-ring ()
   "Remove all entries from the kill ring."
   (interactive)
