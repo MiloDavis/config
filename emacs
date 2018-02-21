@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp ;-*-
+;;; -*- mode: emacs-lisp ;-*-
 ;;; Commentary:
 
 ;;; Code:
@@ -31,7 +31,7 @@
   (package-install 'use-package))
 (setq use-package-always-ensure t)
 (setq use-package-ensure-function
-      (lambda (package-name ensure-val state ctx)
+      (lambda (package-name ensure-val state)
         (package-installed-p package-name)))
 (use-package diminish)
 (use-package bind-key)
@@ -44,7 +44,7 @@
 (defun open-file-binding (file)
   "FILE The name of the file to be oppened."
   (lexical-let ((file file))
-	(lambda () (interactive) (find-file file))))
+    (lambda () (interactive) (find-file file))))
 
 ;; Set open notes.org key binding
 (defvar notes-directory "~/notes/")
