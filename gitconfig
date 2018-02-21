@@ -27,5 +27,8 @@
 	upstream = "!f() { git branch --set-upstream-to=origin/$(git rev-parse --abbrev-ref HEAD); }; f"
     git = !exec git             #Deals with git git
     not-current = !git log --branches --not --remotes --simplify-by-decoration --decorate --oneline
+    undo-rebase = !git reset --hard ORIG_HEAD
+    undo-commit = !git reset HEAD^
+    fpush = !git push --force-with-lease
 [core]
 	excludesfile = /Users/milodavis/.gitignore_global
