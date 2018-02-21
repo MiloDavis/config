@@ -283,91 +283,29 @@
 ;; Makes scripts executable if file is a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
- '(column-number-mode t)
- '(custom-safe-themes
-   (quote
-    ("9a155066ec746201156bb39f7518c1828a73d67742e11271e4f24b7b178c4710" "ba7917b02812fee8da4827fdf7867d3f6f282694f679b5d73f9965f45590843a" "c72a772c104710300103307264c00a04210c00f6cc419a79b8af7890478f380e" "f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
- '(debug-on-error nil)
- '(default-input-method "TeX")
- '(dumb-jump-mode t)
- '(ecb-layout-name "left2")
- '(ecb-layout-window-sizes
-   (quote
-    (("left2"
-      (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
-      (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
- '(ecb-options-version "2.40")
- '(hl-sexp-background-color "#efebe9")
- '(ido-ignore-files
-   (quote
-    ("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc" "*.native" "*.byte")))
- '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
- '(org-src-tab-acts-natively t)
- '(org-trello-current-prefix-keybinding "C-c o")
- '(package-selected-packages
-   (quote
-    (ox-gfm ox-twbs dumb-jump ocp-indent ob-prolog ob-translate ob-async solidity-mode wgrep wgrep-ack wgrep-ag counsel-ebdb counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data langtool yaml-mode htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
- '(paradox-github-token t)
- '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
- '(proof-shell-clear-goals-regexp
-   "No\\s-+more\\s-+subgoals\\.\\|Subtree\\s-proved!\\|Proof\\s-completed")
- '(proof-shell-eager-annotation-end "\377\\|done\\]\\|</infomsg>\\|\\*\\*\\*\\*\\*\\*\\|) >")
- '(proof-shell-eager-annotation-start "\376\\|\\[Reinterning\\|Warning:\\|TcDebug \\|<infomsg>")
- '(proof-shell-eager-annotation-start-length 32)
- '(proof-shell-end-goals-regexp "
-(dependent evars:")
- '(proof-shell-error-regexp
-"^\\(Error:\\|Discarding pattern\\|Syntax error:\\|System Error:\\|User Error:\\|User error:\\|Anomaly[:.]\\|Toplevel input[,]\\)")
- '(proof-shell-font-lock-keywords (quote coq-font-lock-keywords-1))
- '(proof-shell-init-cmd
-(quote
- ("Add Search Blacklist \"Private_\" \"_subproof\". ")))
- '(proof-shell-interactive-prompt-regexp "TcDebug ")
- '(proof-shell-interrupt-regexp "User Interrupt.")
-'(proof-shell-proof-completed-regexp
-"No\\s-+more\\s-+subgoals\\.\\|Subtree\\s-proved!\\|Proof\\s-completed")
- '(proof-shell-restart-cmd "Reset Initial.
- ")
- '(proof-shell-result-end "\372 End Pbp result \373")
- '(proof-shell-result-start "\372 Pbp result \373")
- '(proof-shell-start-goals-regexp "[0-9]+\\(?: focused\\)? subgoals?")
- '(proof-shell-start-silent-cmd "Set Silent. ")
- '(proof-shell-stop-silent-cmd "Unset Silent. ")
- '(python-shell-interpreter "ipython")
-'(selected-packages
-(quote
- (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
- '(setq ecb-tip-of-the-day)
- '(shell-pushd-regexp "pushd")
- '(which-key-mode t))
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(merlin-compilation-error-face ((t (:background "misty rose"))))
+ '(merlin-compilation-error-t ((face (:background "misty rose"))))
+ '(merlin-compilation-warning-face ((t (:background "khaki1"))))
  '(michelson-stack-highlight-face ((t (:background "gray86")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (use-package projectile
-  :init (projectile-global-mode)
+  :diminish projectile-mode
+  :init (projectile-mode)
   :config
+  (define-key projectile-mode-map (kbd "C-c p f") 'counsel-projectile-find-file)
   ;; Fixes performance problem
   ;; From https://github.com/bbatsov/projectile/issues/1183
-  (setq projectile-mode-line
-        '(:eval (format " Projectile[%s]"
-                        (projectile-project-name)))))
+  ;; (setq projectile-mode-line
+  ;;       '(:eval (format " Projectile[%s]"
+  ;;                       (projectile-project-name))))
+  )
 
 
 ;; VLF mode
@@ -872,3 +810,93 @@ STR String to be inserted"
 (provide 'emacs)
 ;;; emacs ends here
 (put 'erase-buffer 'disabled nil)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
+ '(column-number-mode t)
+ '(custom-safe-themes
+   (quote
+    ("9a155066ec746201156bb39f7518c1828a73d67742e11271e4f24b7b178c4710" "ba7917b02812fee8da4827fdf7867d3f6f282694f679b5d73f9965f45590843a" "c72a772c104710300103307264c00a04210c00f6cc419a79b8af7890478f380e" "f9574c9ede3f64d57b3aa9b9cef621d54e2e503f4d75d8613cbcc4ca1c962c21" "d5f17ae86464ef63c46ed4cb322703d91e8ed5e718bf5a7beb69dd63352b26b2" default)))
+ '(debug-on-error nil)
+ '(default-input-method "TeX")
+ '(dumb-jump-mode t)
+ '(ecb-layout-name "left2")
+ '(ecb-layout-window-sizes
+   (quote
+    (("left2"
+      (ecb-directories-buffer-name 0.14444444444444443 . 0.49411764705882355)
+      (ecb-sources-buffer-name 0.14444444444444443 . 0.49411764705882355)))))
+ '(ecb-options-version "2.40")
+ '(hl-sexp-background-color "#efebe9")
+ '(ido-ignore-files
+   (quote
+    ("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./" ".+~" "*.aux" "*.log" "*.pyc" "*.native" "*.byte")))
+ '(jdee-server-dir "~/.emacs.d/jdee-server/target/")
+ '(merlin-error-after-save t)
+ '(ns-antialias-text t)
+ '(org-src-tab-acts-natively t)
+ '(org-trello-current-prefix-keybinding "C-c o")
+ '(package-selected-packages
+   (quote
+    (z3-mode flx org-pomodoro diminish bm undo-tree smtpmail-multi multiple-cursors ox-gfm ox-twbs dumb-jump ocp-indent ob-prolog ob-translate ob-async solidity-mode wgrep wgrep-ack wgrep-ag counsel-ebdb counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data langtool yaml-mode htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+ '(paradox-github-token t)
+ '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
+ '(proof-shell-clear-goals-regexp
+   "No\\s-+more\\s-+subgoals\\.\\|Subtree\\s-proved!\\|Proof\\s-completed")
+ '(proof-shell-eager-annotation-end "\377\\|done\\]\\|</infomsg>\\|\\*\\*\\*\\*\\*\\*\\|) >")
+ '(proof-shell-eager-annotation-start "\376\\|\\[Reinterning\\|Warning:\\|TcDebug \\|<infomsg>")
+ '(proof-shell-eager-annotation-start-length 32)
+ '(proof-shell-end-goals-regexp "
+(dependent evars:")
+ '(proof-shell-error-regexp
+"^\\(Error:\\|Discarding pattern\\|Syntax error:\\|System Error:\\|User Error:\\|User error:\\|Anomaly[:.]\\|Toplevel input[,]\\)")
+ '(proof-shell-font-lock-keywords (quote coq-font-lock-keywords-1))
+ '(proof-shell-init-cmd
+(quote
+ ("Add Search Blacklist \"Private_\" \"_subproof\". ")))
+ '(proof-shell-interactive-prompt-regexp "TcDebug ")
+ '(proof-shell-interrupt-regexp "User Interrupt.")
+'(proof-shell-proof-completed-regexp
+"No\\s-+more\\s-+subgoals\\.\\|Subtree\\s-proved!\\|Proof\\s-completed")
+ '(proof-shell-restart-cmd "Reset Initial.
+ ")
+ '(proof-shell-result-end "\372 End Pbp result \373")
+ '(proof-shell-result-start "\372 Pbp result \373")
+ '(proof-shell-start-goals-regexp "[0-9]+\\(?: focused\\)? subgoals?")
+ '(proof-shell-start-silent-cmd "Set Silent. ")
+ '(proof-shell-stop-silent-cmd "Unset Silent. ")
+ '(python-shell-interpreter "ipython" t)
+'(selected-packages
+(quote
+ (ox-md use-package 2048-game ac-html ac-ispell ac-math async-await auctex auto-auto-indent bison-mode bury-successful-compilation cdlatex chicken-scheme cl-generic cl-lib-highlight color-theme column-enforce-mode debbugs diff-hl discover discover-my-major edit-color-stamp edts egg el-get elisp-depend elm-mode emacs-eclim emacsql emacsql-mysql ensime exec-path-from-shell flycheck-clangcheck flycheck-ocaml flyspell-lazy frame-cmds framemove git-timemachine github-clone gnuplot gnuplot-mode haskell-mode highlight-indentation htmlize iedit irony jdee jedi js2-mode json-mode jumblr latex-extra latex-math-preview latex-preview-pane leuven-theme markdown-mode marmalade-client multi-term mysql-to-org mysql2sqlite nasm-mode nodejs-repl ob-async ob-http ob-ipython ob-kotlin ob-mongo ob-php ob-prolog ob-sql-mode ob-swift ob-typescript ocp-indent org-ac org-babel-eval-in-repl org-clock-convenience org-clock-today org-dashboard org-download org-dp org-drill-table org-easy-img-insert org-edit-latex org-elisp-help org-fstree org-gnome org-grep org-jira org-journal org-link-travis org-mac-link org-magit org-notebook org-octopress org-outlook org-page org-parser org-password-manager org-pdfview org-pomodoro org-present org-preview-html org-projectile org-protocol-jekyll org-publish-agenda org-random-todo org-readme org-recent-headings org-redmine org-ref org-repo-todo org-review org-rtm org-seek org-sticky-header org-sync-snippets org-table-comment org-tree-slide org-vcard org-wc orgbox orgit orglink orglue orgtbl-aggregate orgtbl-ascii-plot orgtbl-join orgtbl-show-header ox-gfm ox-jira ox-twbs php-mode projectile projectile-codesearch projectile-git-autofetch prolog pyvenv racket-mode realgud regex-tool repl-toggle scala-mode2 scheme-complete scheme-here scribble-mode symon tabbar tuareg unbound vlf web-completion-data web-mode which-key wrap-region yafolding yaml-mode)))
+ '(send-mail-function (quote smtpmail-send-it))
+ '(setq ecb-tip-of-the-day)
+ '(shell-pushd-regexp "pushd")
+ '(which-key-mode t))
