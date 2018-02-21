@@ -692,12 +692,15 @@ WND, when specified is the window."
   :bind (:map swiper-map
               ("C-r" . ivy-previous-line)))
 
+(use-package flx)
+
 (defmacro silent (s)
   "Inhibit messages that occur within `S'."
   `(let ((inhibit-message t))
      ,s))
 
 (use-package counsel
+  :diminish counsel-mode
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
@@ -706,8 +709,7 @@ WND, when specified is the window."
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-c s") 'counsel-projectile-ag)
-  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-  (silent (counsel-projectile-on)))
+  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
 (setq-default show-trailing-whitespace t)
 
@@ -956,6 +958,7 @@ STR String to be inserted"
 (show-paren-mode 1)
 
 (use-package company
+  :diminish company-mode
   :config
   (global-company-mode)
   :bind
@@ -973,6 +976,7 @@ STR String to be inserted"
 (setq-default bidi-display-reordering nil)
 
 (use-package flycheck
+  :diminish flycheck-mode
   :config (add-hook 'after-init-hook #'global-flycheck-mode))
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'set-goal-column 'disabled nil)
