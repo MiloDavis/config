@@ -605,73 +605,11 @@ With argument, do this that many times."
 ;; Removes duplicates from history
 (setq history-delete-duplicates t)
 
-;; Remove when bug is fixed
-(defun swiper--add-overlays (re &optional beg end wnd)
-  "Add overlays for RE regexp in visible part of the current buffer.
-BEG and END, when specified, are the point bounds.
-WND, when specified is the window."
-  (setq wnd (or wnd (ivy-state-window ivy-last)))
-  (let ((ov (if visual-line-mode
-                (make-overlay
-                 (save-excursion
-                   (beginning-of-visual-line)
-                   (point))
-                 (save-excursion
-                   (end-of-visual-line)
-                   (point)))
-              (make-overlay
-               (line-beginning-position)
-               (1+ (line-end-position))))))
-    (overlay-put ov 'face 'swiper-line-face)
-    (overlay-put ov 'window wnd)
-    (push ov swiper--overlays)
-    (let* ((wh (window-height))
-           (beg (or beg (save-excursion
-                          (forward-line (- wh))
-                          (point))))
-           (end (or end (save-excursion
-                          (forward-line wh)
-                          (point))))
-           (case-fold-search (ivy--case-fold-p re)))
-      (when (>= (length re) swiper-min-highlight)
-        (save-excursion
-          (goto-char beg)
-          ;; RE can become an invalid regexp
-          (while (and (ignore-errors (re-search-forward re end t))
-                      (> (- (match-end 0) (match-beginning 0)) 0))
-            (unless (and (consp ivy--old-re)
-                         (null
-                          (save-match-data
-                            (ivy--re-filter ivy--old-re
-                                            (list
-                                             (buffer-substring-no-properties
-                                              (line-beginning-position)
-                                              (line-end-position)))))))
-              (let ((mb (match-beginning 0))
-                    (me (match-end 0)))
-                (unless (> (- me mb) 2017)
-                  (swiper--add-overlay mb me
-                                       (if (zerop ivy--subexps)
-                                           (cadr swiper-faces)
-                                         (car swiper-faces))
-                                       wnd 0))))
-            (let ((i 1)
-                  (j 0))
-              (while (<= (cl-incf j) ivy--subexps)
-                (let ((bm (match-beginning j))
-                      (em (match-end j)))
-                  (when (and (integerp em)
-                             (integerp bm))
-                    (while (and (< j ivy--subexps)
-                                (integerp (match-beginning (+ j 1)))
-                                (= em (match-beginning (+ j 1))))
-                      (setq em (match-end (cl-incf j))))
-                    (swiper--add-overlay
-                     bm em
-                     (nth (1+ (mod (+ i 2) (1- (length swiper-faces))))
-                          swiper-faces)
-                     wnd i)
-                    (cl-incf i)))))))))))
+(defun ivy--case-fold-p (string)
+  "Return nil if STRING should be matched case-sensitively."
+  (if (eq ivy-case-fold-search 'auto)
+      (string= string (downcase string))
+    ivy-case-fold-search))
 
 ;; Ivy settings
 (use-package ivy
@@ -1039,7 +977,7 @@ STR String to be inserted"
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
    (quote
-    (z3-mode flx org-pomodoro diminish bm undo-tree smtpmail-multi multiple-cursors ox-gfm ox-twbs dumb-jump ocp-indent ob-prolog ob-translate ob-async solidity-mode wgrep wgrep-ack wgrep-ag counsel-ebdb counsel counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data langtool yaml-mode htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
+    (counsel-tramp z3-mode flx org-pomodoro diminish bm undo-tree smtpmail-multi multiple-cursors ox-gfm ox-twbs dumb-jump ocp-indent ob-prolog ob-translate ob-async solidity-mode wgrep wgrep-ack wgrep-ag counsel-ebdb counsel-osx-app counsel-projectile counsel-spotify flyspell-correct-ivy ivy ivy-todo bash-completion flymake-racket racket-mode zpresent company-coq company-c-headers company-jedi jedi-core web-completion-data langtool yaml-mode htmlize buffer-move projectile tuareg json json-snatcher web-mode ox-md uniquify vlf-setup utop tuareg-mode merlin-mode yafolding which-key vlf use-package realgud nodejs-repl nasm-mode mysql2sqlite mysql-to-org multi-term marmalade-client markdown-mode leuven-theme latex-preview-pane latex-math-preview latex-extra json-mode js2-mode jedi jdee irony idris-mode highlight-indentation haskell-mode gnuplot-mode gnuplot github-clone git-timemachine flyspell-lazy flycheck-ocaml flycheck-clangcheck fireplace exec-path-from-shell emacsql-mysql elisp-depend el-get egg edit-color-stamp discover-my-major diff-hl debbugs column-enforce-mode color-theme cl-lib-highlight chicken-scheme cdlatex bury-successful-compilation bison-mode auto-auto-indent async-await ac-math ac-ispell ac-html 2048-game)))
  '(paradox-github-token t)
  '(proof-shell-assumption-regexp "\\(@\\|_\\|\\w\\)\\(\\w\\|\\s_\\)*")
  '(proof-shell-clear-goals-regexp
