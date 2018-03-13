@@ -9,8 +9,6 @@ export PATH=/Users/milodavis/.opam/system/bin/:$PATH
 export PATH=/usr/texbin:$PATH
 export PATH=/usr/local/texlive/2015/texmf-dist/fonts/tfm:$PATH
 export LANG=en_US.UTF-8
-export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/config/github_api_token)
-export HOMEBREW_NO_AUTO_UPDATE=1
 export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
 alias mv="mv -i"
 alias cp="cp -i"
@@ -80,6 +78,10 @@ if [[ "$OSTYPE" =~ "*darwin*" ]]; then
     if [[ "$SSH_AGENT_PID" == "" ]]; then
         eval $(<~/.ssh-agent-thing);
     fi
+
+    export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/config/github_api_token)
+    export HOMEBREW_NO_AUTO_UPDATE=1
+
 fi
 
 if [[ "$OSTYPE" = *"darwin"* ]]; then
@@ -109,8 +111,6 @@ function alphanet () {
 # I like how more automatically scrolls in the emacs shell
 # TODO: figure out how to get less to do this
 export PAGER=more
-export MORE=-R
-export LESS=-R
 
 export TZPATH="/Users/milodavis/tezos/repo/"
 
