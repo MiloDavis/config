@@ -654,16 +654,19 @@ With argument, do this that many times."
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
 
 ;; Coq
-(setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
-(autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
-(let ((default-directory "~/.emacs.d/lisp"))
-  (normal-top-level-add-subdirs-to-load-path))
-(load "~/.emacs.d/lisp/PG/generic/proof-site" nil t)
-(use-package proof-site
-  :config
-  (setq proof-splash-seen nil)
-  (setq proof-three-window-mode-policy 'hybrid)
-  (setq proof-script-fly-past-comments t))
+(defconst my-pg-path "~/.emacs.d/lisp/PG/generic/proof-site")
+(if (file-exists-p my-pg-path)
+	(progn
+	  (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
+	  (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
+	  (let ((default-directory "~/.emacs.d/lisp"))
+		(normal-top-level-add-subdirs-to-load-path))
+	  (load "~/.emacs.d/lisp/PG/generic/proof-site" nil t)
+	  (use-package proof-site
+		:config
+		(setq proof-splash-seen nil)
+		(setq proof-three-window-mode-policy 'hybrid)
+		(setq proof-script-fly-past-comments t))))
 
 (use-package company-coq
   :config
@@ -864,20 +867,23 @@ STR String to be inserted"
   (setq ibuffer-show-empty-filter-groups nil))
 
 ;; Loads michelson mode
-(load "~/tezos/repo/emacs/michelson-mode.el" nil t)
-(defun set-alphanet (alphanet)
-  (setq michelson-client-command
-        (if alphanet
-            "~/tezos/repo/scripts/alphanet.sh client"
-          "~/tezos/repo/tezos-client -port 18739"))
-  (setq michelson-alphanet alphanet))
+(defconst my-michelson-path "~/tezos/repo/emacs/michelson-mode.el")
+(if (file-exists-p my-michelson-path)
+	(progn
+	  (load my-michelson-path nil t)
+	  (defun set-alphanet (alphanet)
+		(setq michelson-client-command
+			  (if alphanet
+				  "~/tezos/repo/scripts/alphanet.sh client"
+				"~/tezos/repo/tezos-client -port 18739"))
+		(setq michelson-alphanet alphanet))
 
-(defun toggle-alphanet (&optional alphanet)
-  "Toggle whether Michelson is using the alphanet."
-  (interactive)
-  (set-alphanet (not michelson-alphanet)))
+	  (defun toggle-alphanet (&optional alphanet)
+		"Toggle whether Michelson is using the alphanet."
+		(interactive)
+		(set-alphanet (not michelson-alphanet)))
 
-(set-alphanet nil)
+	  (set-alphanet nil)))
 
 (setq-default indent-tabs-mode nil)
 
