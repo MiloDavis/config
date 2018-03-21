@@ -852,7 +852,7 @@ STR String to be inserted"
 
 (use-package color-theme
   :config (if (window-system)
-              (load-theme 'leuven)
+              (load-theme 'leuven t)
             nil))
 
 ;; Improves display of long lines
