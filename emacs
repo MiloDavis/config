@@ -323,9 +323,7 @@
 
 ;; C mode settings
 (setq-default c-basic-offset 4)
-(add-hook 'c-mode-common-hook
-          (lambda ()
-	    (c-set-offset 'case-label '+)))
+(add-hook 'c-mode-common-hook (lambda () (c-set-offset 'case-label '+)))
 
 ;; Sets locking file behavior
 (setq create-lockfiles nil)
