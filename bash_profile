@@ -41,7 +41,13 @@ function wstrip () {
 function every () { while True; do $*; sleep 1; done; }
 function every-nth () { interval=$1; shift; while True; do $*; sleep $interval; echo; done; }
 function repeat () { num_execs="$1"; shift; for i in `seq $num_execs`; do $*; done; }
-function alert () { terminal-notifier -message "$1"; }
+function alert () {
+    if [ -z terminal-notifier ]; then
+        terminal-notifier -message "$1";
+    else
+        notify-send "$1"
+    fi
+}
 alias lcase="tr '[A-Z]' '[a-z]'"
 switchd () { pushd; }
 alias sd="switchd"
