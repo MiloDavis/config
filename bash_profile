@@ -125,11 +125,12 @@ export TZPATH="/Users/milodavis/tezos/repo/"
 export TERM=xterm-256color
 
 # For easy parallel make
-MAKE_THREADS=4
+MAKE_THREADS=`nproc`
 alias makep="make -j ${MAKE_THREADS}"
 
 # Prints jbuilder tests in tezos live
 export DEV=" --dev --no-buffer"
+export MAKE_FLAGS="--no-print-directory"
 
 # OPAM configuration
 . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
