@@ -8,6 +8,7 @@ export PATH=/usr/local/lib/python2.7/site-packages:$PATH
 export PATH=/Users/milodavis/.opam/system/bin/:$PATH
 export PATH=/usr/texbin:$PATH
 export PATH=/usr/local/texlive/2015/texmf-dist/fonts/tfm:$PATH
+export PATH=~/.userspace-programs:$PATH
 export LANG=en_US.UTF-8
 export CLASSPATH=/Users/milodavis/classpath/*:$CLASSPATH
 alias mv="mv -i"
@@ -32,7 +33,7 @@ function reload() {
 function search () {
     search_str="*$1*"
     shift
-    find . -iname "$search_str" "$@" | grep -v '\.git';
+    find . -iname "$search_str" "$@" | grep -v '\.git' | grep -v '_build';
 }
 
 function wstrip () {
@@ -108,6 +109,7 @@ alias start-tezos-node="source ~/notes/init-tezos.sh"
 function stop-tezos-nodes () {
     pgrep -f tezos-node | xargs -r kill -9;
     pgrep -f launch-sandbox-nodes | xargs -r kill -9
+    export is_tezos_sandboxed_init=0
 }
 
 function alphanet () {
@@ -130,9 +132,15 @@ alias makep="make -j ${MAKE_THREADS}"
 
 # Prints jbuilder tests in tezos live
 export DEV=" --dev --no-buffer"
-export MAKE_FLAGS="--no-print-directory"
+export REPO_PATH="/home/milo/tezos/repo/"
+
+alias make="make --no-print-directory"
+export show_logs=false
+
+alias betanet="TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=yes ~/tezos/repo/tezos-client --addr milodavis.com"
 
 # OPAM configuration
 . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
 cd ~
+if [ -e /home/milo/.nix-profile/etc/profile.d/nix.sh ]; then . /home/milo/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

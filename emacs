@@ -178,6 +178,7 @@
 	("8nobreak" "﻿")
     ("8tez" "ꜩ")
     ("8implies" "⇒")
+    ("8neg" "¬")
 	))
 (setq save-abbrevs t)                 ;; (ask) save abbrevs when files are saved
 (setq-default abbrev-mode t)          ;; turn it on for all modes
@@ -421,11 +422,8 @@ With argument, do this that many times."
 (setq inhibit-startup-message t) ; Emacs splash screen
 
 ;; ocaml
-(load "~/libraries/merlin/emacs/merlin")
-
 (use-package merlin-mode
   :config
-  (setq merlin-command "~/libraries/merlin/ocamlmerlin")
   (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
   (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
   (set-face-background 'merlin-type-face "#88FF44")
@@ -539,7 +537,7 @@ With argument, do this that many times."
     (insert ":PROPERTIES:\n:HTML_CONTAINER_CLASS: answers\n:END:\n"))
   (defun toggle-modeline-time ()
     (interactive)
-    (setq org-mode-line-string (not org-mode-line-string))
+    (setq org-clock-clocked-in-display (not org-clock-clocked-in-display))
     (sit-for 0))
   :bind (:map org-mode-map
               ("C-c C-M-f" . org-metaright)
@@ -652,26 +650,19 @@ With argument, do this that many times."
 ;; Input unicode using tex with: M-x set-input-method RET tex RET
 
 ;; Coq
-(defconst my-pg-path "~/.emacs.d/lisp/PG/generic/proof-site")
+(defconst my-pg-path "~/.emacs.d/lisp/PG/generic/")
 (if (file-exists-p my-pg-path)
 	(progn
 	  (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 	  (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 	  (let ((default-directory "~/.emacs.d/lisp"))
 		(normal-top-level-add-subdirs-to-load-path))
-	  (load "~/.emacs.d/lisp/PG/generic/proof-site" nil t)
+	  (load (concat "~/.emacs.d/lisp/PG/generic/" "proof-site") nil t)
 	  (use-package proof-site
 		:config
 		(setq proof-splash-seen nil)
 		(setq proof-three-window-mode-policy 'hybrid)
 		(setq proof-script-fly-past-comments t))))
-
-(use-package company-coq
-  :config
-  (add-hook 'coq-mode-hook #'company-coq-initialize)
-  (add-hook 'coq-mode-hook (lambda ()
-                             (abbrev-mode -1)
-                             (flycheck-mode -1))))
 
 (defvar python-base-shebang "#!/usr/bin/env python")
 
@@ -701,9 +692,6 @@ STR String to be inserted"
   (interactive)
   (_insert-at-beginning-of-file "#!/usr/bin/env bash\n"))
 
-(when (executable-find "ipython")
-  (setq python-shell-interpreter "ipython"))
-
 ;; Improved splitting functions
 ;; https://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury/
 (defun vsplit-last-buffer ()
@@ -725,7 +713,19 @@ STR String to be inserted"
 ;; Tramp mode
 (use-package tramp
   :config
-  (setq tramp-default-method "ssh"))
+  (setq tramp-default-method "ssh")
+  ;; From http://emacsredux.com/blog/2013/04/21/edit-files-as-root/
+  (defun sudo-edit (&optional arg)
+    "Edit currently visited file as root.
+
+With a prefix ARG prompt for a file to visit.
+Will also prompt for a file to visit if current
+buffer is not visiting a file."
+    (interactive "P")
+    (if (or arg (not buffer-file-name))
+        (find-file (concat "/sudo:root@localhost:"
+                           (ido-read-file-name "Find file(as root): ")))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name)))))
 
 (setq ring-bell-function 'ignore)
 
@@ -821,6 +821,12 @@ STR String to be inserted"
 		(set-alphanet (not michelson-alphanet)))
 
 	  (set-alphanet nil)))
+
+(defconst acl2-path "~/libraries/acl2/emacs/emacs-acl2")
+
+(when (file-exists-p acl2-path)
+  (progn
+    (load acl2-path nil t)))
 
 (setq-default indent-tabs-mode nil)
 
@@ -955,3 +961,6 @@ STR String to be inserted"
  '(setq ecb-tip-of-the-day)
  '(shell-pushd-regexp "pushd")
  '(which-key-mode t))
+;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; ## end of OPAM user-setup addition for emacs / base ## keep this line

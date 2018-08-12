@@ -14,7 +14,7 @@
 [push]
 	default = current
 [diff]
-    tool = opendiff
+    tool = meld
 [difftool]
 	prompt = false
 [filter "lfs"]
@@ -30,5 +30,6 @@
     undo-rebase = !git reset --hard ORIG_HEAD
     undo-commit = !git reset HEAD^
     fpush = !git push --force-with-lease
+    rpull = "!f() { git fetch ; git rebase -i origin/$(git rev-parse --abbrev-ref HEAD) ; } ; f"
 [core]
 	excludesfile = /Users/milodavis/.gitignore_global
