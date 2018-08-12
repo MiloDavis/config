@@ -15,7 +15,10 @@ alias mv="mv -i"
 alias cp="cp -i"
 alias ack="ack -i"              # Make ack case insensitive
 
-# export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
+work_config_file=~/work_local/bash
+if [ -f $work_config_file ]; then
+    source $work_config_file
+fi
 
 GREEN="\[$(tput setaf 2)\]"
 RESET="\[$(tput sgr0)\]"
@@ -143,4 +146,3 @@ alias betanet="TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=yes ~/tezos/repo/tezos-cli
 . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
 cd ~
-if [ -e /home/milo/.nix-profile/etc/profile.d/nix.sh ]; then . /home/milo/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

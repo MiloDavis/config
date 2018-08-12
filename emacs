@@ -3,6 +3,9 @@
 
 ;;; Code:
 (setq user-emacs-directory "~/.emacs.d/")
+(defconst work-config "~/work_local/work-config.el")
+(if (file-exists-p work-config)
+    (load work-config))
 
 (require 'cl)
 
@@ -60,6 +63,11 @@
 (global-set-key (kbd "C-c n h") (open-notes-file "hacks.org"))
 (global-set-key (kbd "C-c n c") (open-notes-file "courses.org"))
 (global-set-key (kbd "C-c n t") (open-notes-file "tezos.org"))
+(lexical-let ((work-file "~/work_local/work.org"))
+  (global-set-key (kbd "C-c n w")
+  (if (file-exists-p work-file)
+      (lambda () (interactive) (find-file work-file))
+    (lambda () (interactive) (message "You are not at work!")))))
 
 (require 'linum)
 (defun my/turn-off-linum-mode ()
